@@ -1,0 +1,124 @@
+#' Identify Robust Programs using the Nature 2023 Method
+#'
+#' This function identifies robust gene programs using the method proposed in the Nature 2023 paper.
+#' The method aims to remove redundant programs that are highly similar within the same patient.
+#'
+#' @param WH.list
+#' A nested list containing NMF results for each individual, generated from the \code{\link{RunNMF}} function. The structure of WH.list should be:
+#'
+#' \itemize{
+#'  \item\code{sample_1}
+#'  \itemize{
+#'  \item\code{W} Normalized W matrix from NMF
+#'  \item\code{H} Normalized H matrix from NMF
+#' }
+#' \item\code{sample_2}
+#'  \itemize{
+#'  \item\code{W} Normalized W matrix from NMF
+#'  \item\code{H} Normalized H matrix from NMF
+#' }
+#' ...
+#' \item\code{sample_n}
+#' }
+#'
+#' @param top The number of top genes to extract for each robust program. Default is 50
+#' @param IQR.cut The cutoff value for the interquartile range (IQR) of gene useage to filter programs during QC
+#' Default is 0.1
+#' @param median.cut The cutoff value for the median gene useage to filter programs during QC
+#' Default is 0
+#' @param intra.min The threshold to identify similar programs within an individual
+#' Number of overlap genes greater than or equal to \code{intra.min} are considered similar within the same individual
+#' Default is 35
+#' @param intra.rep The minimum number of similar programs. If a program has less than \code{intra.rep} similar programs in an individual,
+#' it will be removed. Default is 2
+#' @param inter.filter Logical value indicates whether filter the programs based on inter-tumor similarities. Default is TRUE
+#' @param inter.min The threshold to identify robust programs across individuals
+#' Number of overlap genes greater than or equal to \code{inter.min} are considered similar across individuals
+#' Default is 10
+#' @param inter.rep The minimum number of individuals of a program must be present to be considered as a robust program after intra-tumor filtering.
+#' Default is 2
+#' @param intra.max The threshold to identify redundant programs within an individual
+#' Number of overlap genes greater than or equal to \code{intra.max} are considered redundant within the same individual
+#' Default is 10
+#'
+#' @return A list containing robust gene programs for each individual
+#' Each element of the list represents a program and contains \code{top} genes with gene names.
+#'
+#' @details
+#' The function first performs QC on the programs based on the interquartile range (IQR) and median gene usage
+#' Programs with low IQR or median gene usage are filtered out.
+#'
+#' Then, it removes programs that have less than \code{intra.rep} similar programs(number of overlap genes between two programs >= \code{inter.min}) in the same individual (for selecting robust programs).
+#'
+#' Next, it filters out programs that are not robustly present(number of overlap genes between two programs >= \code{intra.min}) across individuals (more than \code{intra.rep}).
+#'
+#' Finally, it further filters out redundant programs, only selects programs that have a intersection smaller than \code{intra.max} with a previously selected programs in an individual.
+#'
+#' The remaining programs are considered robust and are returned as the final result.
+#'
+#'
+#' @seealso
+#' \code{\link{RunNMF}} for the function to perform NMF analysis.
+#'
+#' @importFrom stats setNames quantile
+#'
+#' @references
+#' Gavish, Avishai et al. “Hallmarks of transcriptional intratumour heterogeneity across a thousand tumours.” Nature vol. 618,7965 (2023): 598-606. \url{https://doi.org/10.1038/s41586-023-06130-4}
+#' @export
+#'
+
+
+RobustProgram = function(WH.list, top = 50, IQR.cut = 0.1, median.cut = 0, intra.min = 35, intra.rep = 2, inter.filter = TRUE,
+                         inter.min = 10, inter.rep = 2, intra.max = 10){
+
+    WH.list = WH.list[!sapply(WH.list, is.null)]
+    #QC by IQR and median useage
+    ls_pg = lapply(WH.list, function(WH){
+
+        mat_quat = apply(WH$H,1, quantile)
+        idx_median = mat_quat['50%',] >= median.cut
+        idx_IQR = mat_quat['75%',] - mat_quat['25%',] >= IQR.cut
+
+        W_filter = WH$W[, idx_median & idx_IQR]
+
+        pgs = lapply(setNames(colnames(W_filter),colnames(W_filter)), function(pg){
+            pg = W_filter[,pg]
+            head(sort(pg, decreasing = TRUE), n = top)
+
+        })
+        #filter by intra.min
+        mat_ovlp = OverlapMat(lapply(pgs, names))
+        idx_pg = apply(mat_ovlp, 1, function(pgop){sum(pgop >= intra.min)}) >= intra.rep
+        pgs = pgs[idx_pg]
+    })
+
+    #filter inter.min
+    mat_ovlp_all = OverlapMat(lapply(unlist(ls_pg, recursive = FALSE), names))
+    ls_names = lapply(ls_pg, names)
+    colnames(mat_ovlp_all) = rownames(mat_ovlp_all) = unlist(ls_names, use.names = FALSE)
+
+    ls_keep_pg = lapply(1:length(ls_pg), function(pat){
+        sub_mat_ovlp = mat_ovlp_all[match(names(ls_pg[[pat]]), colnames(mat_ovlp_all)), -match(names(ls_pg[[pat]]), colnames(mat_ovlp_all))]
+
+        idx_inter = apply(sub_mat_ovlp, 1, function(pgop){ sum(pgop >= inter.min) >= inter.rep })
+
+        #filter out without inter tumor rep
+        pgs = names(idx_inter)[idx_inter]
+
+        pgs = sort(apply(sub_mat_ovlp[pgs,], 1, max), decreasing = TRUE)
+
+        if(length(pgs) > 1){
+            keep_pgs = names(pgs)[1]
+            for(pg_test in names(pgs)[-1]){
+                if(max(mat_ovlp_all[keep_pgs,pg_test]) <= intra.max ){
+                    keep_pgs = c(keep_pgs, pg_test)
+                }
+            }
+        }
+
+        return(lapply(ls_pg[[pat]][keep_pgs], names))
+
+    }) %>% unlist(recursive = FALSE)
+
+    return(ls_keep_pg)
+}

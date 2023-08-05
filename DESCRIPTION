@@ -1,0 +1,23 @@
+Package: sciNMF
+Type: Package
+Title: Single Cell Individial Non-negative Matrix Factorization
+Version: 0.0.0.9000
+Authors@R: c(person("Ronghan", "Tang", email = "908488796@qq.com", role = c("aut", "cre")),
+    person("Zheyang", "Zhang", role = "aut", email = "82795809@qq.com"))
+Maintainer: Ronghan Tang <908488796@qq.com>
+Description: This is a package for non-negative matrix factorization (NMF) on single cell RNA seq data
+    to investigate the heterogeneity of cellular transcriptomic states in individuals.
+License: MIT + file LICENSE
+Imports: Seurat, foreach, doParallel, magrittr, dplyr, cowplot, tidyr,
+        stats, NNLM, fpc, methods, ComplexHeatmap, paletteer, ggplot2,
+        GSVA, clusterProfiler, survival
+Remotes: NNLM = https://github.com/linxihui/NNLM
+Encoding: UTF-8
+LazyData: true
+Repository: https://github.com/Tang-RH/sciNMF
+RoxygenNote: 7.2.3
+Depends: R (>= 3.6)
+NeedsCompilation: no
+Packaged: 2023-08-05 07:14:36 UTC; tangs
+Author: Ronghan Tang [aut, cre],
+  Zheyang Zhang [aut]
