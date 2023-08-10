@@ -17,7 +17,7 @@ PGEnricher(
 )
 }
 \arguments{
-\item{pg.list}{A list containing transcriptome programs, each program is composed with genes.}
+\item{pg.list}{A list containing transcriptional programs, each program is composed with genes.}
 
 \item{gene.set}{User input annotation of TERM TO GENE mapping, a data.frame of 2 column with term and gene. All built-in data.frame object
 are \code{"GO_BP", "GO_CC", "GO_MM", "Hallmark", "CellMarker"}. You can set a character vector for using the built-in gene sets. Default is "GO_BP"}
@@ -43,11 +43,11 @@ Default is "BH" (Benjamini-Hochberg).}
 \item{...}{Additional arguments to be passed to the \code{\link[clusterProfiler]{enricher}} of clusterProfiler package.}
 }
 \value{
-A list containing the enrichment results for each input transcriptome program.
-Each element of the list represents one transcriptome program and contains a data.frame with enrichment results.
+A list containing the enrichment results for each input transcriptional program.
+Each element of the list represents one transcriptional program and contains a data.frame with enrichment results.
 }
 \description{
-Performing universal enrichment analysis on transcriptome programs (gene sets)
+Performing universal enrichment analysis on transcriptional programs (gene sets)
 }
 \details{
 The function uses the \code{clusterProfiler::\link[clusterProfiler]{enricher}} function from the clusterProfiler package to perform gene set enrichment analysis based on \code{stats::\link[stats]{phyper}} hypergeometric test.

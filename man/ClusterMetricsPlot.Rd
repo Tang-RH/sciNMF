@@ -37,7 +37,7 @@ calculating and visualizing some clustering evaluation metrics.
 }
 \examples{
 
-# Sample transcriptome programs
+# Sample transcriptional programs
 set.seed(123)
 ls_pg <- lapply(1:50, function(i){
   paste0('g',sample(1:100,20))
