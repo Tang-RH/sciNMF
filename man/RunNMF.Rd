@@ -69,7 +69,7 @@ RunNMF(
 \item{...}{Additional arguments for \code{NNLM::\link[NNLM]{nnmf}}}
 }
 \value{
-A list of matrices containing the NMF results named by groups in group.by column; for each individual, H and W matrices will be return
+A list of matrices containing the NMF results named by groups in group.by column; for each individual, normalized H and W matrices will be return
 }
 \description{
 This function performs non-negative matrix factorization (NMF) analysis

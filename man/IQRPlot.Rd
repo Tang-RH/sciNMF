@@ -12,13 +12,13 @@ IQRPlot(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = NULL)
 \itemize{
  \item\code{sample_1}
  \itemize{
- \item\code{W} W matrix from NMF
- \item\code{H} H matrix from NMF
+ \item\code{W} Normalized W matrix from NMF
+ \item\code{H} Normalized H matrix from NMF
 }
 \item\code{sample_2}
  \itemize{
- \item\code{W} W matrix from NMF
- \item\code{H} H matrix from NMF
+ \item\code{W} Normalized W matrix from NMF
+ \item\code{H} Normalized H matrix from NMF
 }
 ...
 \item\code{sample_n}
@@ -36,13 +36,7 @@ IQRPlot(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = NULL)
 A girded ggplot object or a list of ggplot objects containing boxplot for each program with IQR and median filtering.
 }
 \description{
-The IQRPlot function is used to generate boxplots for each program based on the IQR (Interquartile Range) and median filter. 
-The IQR and median usage of each program is calculated from normalized H matrices, the NMF (Non-Negative Matrix Factorization) results. 
-The higher IQR indicates a larger range of usage, which is useful for quality control.
-}
-\details{
-First, all the program usages for each cell will be normalized to 1. Then the IQR and median usage of each program will be calculated for quality control.
-The programs with IQR and median usage below the cutoff will be labeled as 'Remove'
+The IQRPlot function is used to generate boxplots for each program based on the IQR (Interquartile Range) and median filter. It calculates the IQR and median usage of each program from the NMF (Non-Negative Matrix Factorization) results and filters out programs with low IQR and median values. The higher IQR indicates a larger range of usage, which is useful for quality control.
 }
 \examples{
 \dontrun{

@@ -8,7 +8,6 @@ EnrichDotPlot(
   enrich.list,
   top = 3,
   only.top = TRUE,
-  title = "Enriched GeneSets",
   color = paletteer_dynamic("cartography::red.pal", 20)[10:20]
 )
 }
@@ -18,8 +17,6 @@ EnrichDotPlot(
 \item{top}{The number of top enriched terms to be shown for each program.}
 
 \item{only.top}{A logical value indicating whether to plot only the top enriched terms (TRUE) or all enriched terms that are part of the top enriched pathways (FALSE).}
-
-\item{title}{The title of the plot, default is 'Enriched GeneSets'}
 
 \item{color}{A vector of colors to be used in the dot plot. The length of the vector should be at least the number of terms being plotted. The default is \code{paletteer::paletteer_dynamic("cartography::red.pal", 20)[10:20]}.}
 }

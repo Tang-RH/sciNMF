@@ -7,9 +7,7 @@
 #' @param top The number of top enriched terms to be shown for each program.
 #'
 #' @param only.top A logical value indicating whether to plot only the top enriched terms (TRUE) or all enriched terms that are part of the top enriched pathways (FALSE).
-#' 
-#' @param title The title of the plot, default is 'Enriched GeneSets'
-#' 
+#'
 #' @param color A vector of colors to be used in the dot plot. The length of the vector should be at least the number of terms being plotted. The default is \code{paletteer::paletteer_dynamic("cartography::red.pal", 20)[10:20]}.
 #'
 #' @return A ggplot object representing the enrichment dot plot.
@@ -23,7 +21,7 @@
 #'
 #' @export
 #'
-EnrichDotPlot = function(enrich.list, top = 3, only.top = TRUE, title = 'Enriched GeneSets', color = paletteer_dynamic("cartography::red.pal", 20)[10:20]){
+EnrichDotPlot = function(enrich.list, top = 3, only.top = TRUE, color = paletteer_dynamic("cartography::red.pal", 20)[10:20]){
     if(inherits(enrich.list[[1]], "enrichResult")){
         enrich.list = lapply(enrich.list, function(enrich){enrich@result})
     }
@@ -86,7 +84,7 @@ EnrichDotPlot = function(enrich.list, top = 3, only.top = TRUE, title = 'Enriche
         geom_point(aes(color = Nlgp, size = GeneRatio)) +
         scale_color_gradientn(colors = color, name = '-log10 p.adj') +
         theme(axis.text.x = element_text(angle = 60,hjust = 1)) +
-        theme(axis.text = element_text(face = 'bold')) + ggtitle(title)
+        theme(axis.text = element_text(face = 'bold'))
 
     return(pl)
 }

@@ -62,5 +62,5 @@ adjusted p-value, and other statistics.
 
 \code{\link{ls_gs_sciNMF}} built-in gene sets.
 
-\url{https://maayanlab.cloud/Enrichr/#libraries} The source of gene.set.
+\code{\link{https://maayanlab.cloud/Enrichr/#libraries}} The source of gene.set.
 }

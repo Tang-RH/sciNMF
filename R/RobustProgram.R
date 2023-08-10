@@ -9,13 +9,13 @@
 #' \itemize{
 #'  \item\code{sample_1}
 #'  \itemize{
-#'  \item\code{W} W matrix from NMF
-#'  \item\code{H} H matrix from NMF
+#'  \item\code{W} Normalized W matrix from NMF
+#'  \item\code{H} Normalized H matrix from NMF
 #' }
 #' \item\code{sample_2}
 #'  \itemize{
-#'  \item\code{W} W matrix from NMF
-#'  \item\code{H} H matrix from NMF
+#'  \item\code{W} Normalized W matrix from NMF
+#'  \item\code{H} Normalized H matrix from NMF
 #' }
 #' ...
 #' \item\code{sample_n}
@@ -74,10 +74,8 @@ RobustProgram = function(WH.list, top = 50, IQR.cut = 0.1, median.cut = 0, intra
     WH.list = WH.list[!sapply(WH.list, is.null)]
     #QC by IQR and median useage
     ls_pg = lapply(WH.list, function(WH){
-        #normalize H by col to calculate IQR
-        H = apply(WH$H, 2, function(me){me/sum(me)})
-        
-        mat_quat = apply(H,1, quantile)
+
+        mat_quat = apply(WH$H,1, quantile)
         idx_median = mat_quat['50%',] >= median.cut
         idx_IQR = mat_quat['75%',] - mat_quat['25%',] >= IQR.cut
 

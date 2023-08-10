@@ -77,7 +77,7 @@ MPCoxph = function(mat.exp, cli, gene.list, time = 'OS.time', event = 'OS.status
 
         #calculate the score for each subgroup
         if(score.method %in% c('ssgsea','gsva','plage')){
-            cat('Calculating scores for Group',group,'\n')
+            cat('Calculating scorea for Group',group,'\n')
             sub_score = GSVA::gsva(expr = sub_exp, gset.idx.list = gene.list,
                                    method = score.method,kcdf = kcdf) %>% t
         }else if(score.method == 'average'){
@@ -152,7 +152,7 @@ MPCoxph = function(mat.exp, cli, gene.list, time = 'OS.time', event = 'OS.status
                   color = color.asterisks, fontface = 'bold') +
         theme_bw() + ggtitle(titile) +
         theme(plot.title = element_text(hjust = 0.5),
-              axis.text.x = element_text(vjust = 0.5,hjust = 1, angle = 90)) +
+              axis.text.x = element_text(vjust = 0.5, angle = 90)) +
         xlab(xlab) + ylab(ylab)
 
     return(pl)

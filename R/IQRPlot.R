@@ -1,8 +1,6 @@
 #' IQRPlot: Generate Boxplots with IQR and Median Filter
 #'
-#' The IQRPlot function is used to generate boxplots for each program based on the IQR (Interquartile Range) and median filter. 
-#' The IQR and median usage of each program is calculated from normalized H matrices, the NMF (Non-Negative Matrix Factorization) results. 
-#' The higher IQR indicates a larger range of usage, which is useful for quality control.
+#' The IQRPlot function is used to generate boxplots for each program based on the IQR (Interquartile Range) and median filter. It calculates the IQR and median usage of each program from the NMF (Non-Negative Matrix Factorization) results and filters out programs with low IQR and median values. The higher IQR indicates a larger range of usage, which is useful for quality control.
 #'
 #' @param WH.list
 #' A nested list containing NMF results for each individual, generated from the \code{\link{RunNMF}} function. The structure of WH.list should be:
@@ -10,13 +8,13 @@
 #' \itemize{
 #'  \item\code{sample_1}
 #'  \itemize{
-#'  \item\code{W} W matrix from NMF
-#'  \item\code{H} H matrix from NMF
+#'  \item\code{W} Normalized W matrix from NMF
+#'  \item\code{H} Normalized H matrix from NMF
 #' }
 #' \item\code{sample_2}
 #'  \itemize{
-#'  \item\code{W} W matrix from NMF
-#'  \item\code{H} H matrix from NMF
+#'  \item\code{W} Normalized W matrix from NMF
+#'  \item\code{H} Normalized H matrix from NMF
 #' }
 #' ...
 #' \item\code{sample_n}
@@ -27,10 +25,6 @@
 #' @param grid A logical value indicating whether to arrange the plots of samples in a grid (TRUE) or return a list of ggplot objects (FALSE).
 #' @param ncol Determines the number of columns when arranging the plots in a grid. If NULL, it will be automatically determined based on the number of samples.
 #'
-#' @details
-#' First, all the program usages for each cell will be normalized to 1. Then the IQR and median usage of each program will be calculated for quality control.
-#' The programs with IQR and median usage below the cutoff will be labeled as 'Remove'
-#' 
 #' @return A girded ggplot object or a list of ggplot objects containing boxplot for each program with IQR and median filtering.
 #'
 #' @import ggplot2
@@ -51,15 +45,13 @@
 IQRPlot = function(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = NULL){
     WH.list = WH.list[!sapply(WH.list, is.null)]
     ls_pl = lapply(WH.list, function(WH){
-        #normalize H by col to calculate IQR
-        H = apply(WH$H, 2, function(me){me/sum(me)})
 
-        df_pl = tidyr::gather(data.frame(t(H)),'Program','Ratio')
-        df_pl$Program = rep(rownames(H), each = ncol(H))
-        mat_quat = apply(H,1, quantile)
+        df_pl = tidyr::gather(data.frame(t(WH$H)),'Program','Ratio')
+        df_pl$Program = rep(rownames(WH$H), each = ncol(WH$H))
+        mat_quat = apply(WH$H,1, quantile)
         idx_median = mat_quat['50%',] > median.cut
         idx_IQR = mat_quat['75%',] - mat_quat['25%',] > IQR.cut
-        df_pl$Keep = ifelse(df_pl$Program %in% colnames(mat_quat)[idx_median & idx_IQR], 'Keep', 'Remove')
+        df_pl$Keep = ifelse(df_pl$Program %in% colnames(mat_quat)[idx_median & idx_IQR], 'TRUE', 'FALSE')
         df_pl$K = sub(".*_K([0-9]+)_P[0-9]+$", "\\1", df_pl$Program)
         sam = gsub("_K[0-9]+_P[0-9]+$", "", df_pl$Program[1])
         df_pl$Program = factor(df_pl$Program, levels = colnames(mat_quat)[order(mat_quat['50%',])])

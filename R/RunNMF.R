@@ -24,7 +24,7 @@
 #' @param method method for \code{NNLM::\link[NNLM]{nnmf}} computation, default is 'scd'
 #' @param ... Additional arguments for \code{NNLM::\link[NNLM]{nnmf}}
 #'
-#' @return A list of matrices containing the NMF results named by groups in group.by column; for each individual, H and W matrices will be return
+#' @return A list of matrices containing the NMF results named by groups in group.by column; for each individual, normalized H and W matrices will be return
 #'
 #' @export
 #'
@@ -104,8 +104,10 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
 
     ls_WH = lapply(k_range, function(k){
         res_nmf = NNLM::nnmf(data, k = k, loss = loss, max.iter = max.iter, method  = method, ...)
-        H = res_nmf$H
-        W = res_nmf$W
+        #normalize across cells, for calculating the IQR
+        H = apply(res_nmf$H, 2, function(me){me/sum(me)})
+        #normalize in each module
+        W = apply(res_nmf$W, 1, function(me){me/colSums(res_nmf$W)}) %>% t
         rownames(H) = colnames(W) = paste0(project,'_',sam,'_K',k,'_P',1:k)
         return(list(H = H, W = W))
     })

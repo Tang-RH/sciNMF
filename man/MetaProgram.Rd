@@ -12,13 +12,13 @@ MetaProgram(WH.list, cluster.result, top = 50, key = "MP_", only.gene = TRUE)
 \itemize{
  \item\code{sample_1}
  \itemize{
- \item\code{W} W matrix from NMF
- \item\code{H} H matrix from NMF
+ \item\code{W} Normalized W matrix from NMF
+ \item\code{H} Normalized H matrix from NMF
 }
 \item\code{sample_2}
  \itemize{
- \item\code{W} W matrix from NMF
- \item\code{H} H matrix from NMF
+ \item\code{W} Normalized W matrix from NMF
+ \item\code{H} Normalized H matrix from NMF
 }
 ...
 \item\code{sample_n}
