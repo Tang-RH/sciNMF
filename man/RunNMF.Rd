@@ -2,7 +2,7 @@
 % Please edit documentation in R/RunNMF.R
 \name{RunNMF}
 \alias{RunNMF}
-\title{Perform single-cell NMF analysis on individuals(sciNMF)}
+\title{Single-Cell NMF analysis on Individuals(sciNMF)}
 \usage{
 RunNMF(
   object,
@@ -38,11 +38,11 @@ RunNMF(
 
 \item{samples}{samples to analyze, default is NULL and all the samples in group.by column will be analyzed}
 
-\item{project}{project name for the output files, default is NMF}
+\item{project}{prefix for transcriptional programs and the output files, default is 'NMF'}
 
 \item{normalization.method}{normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'}
 
-\item{min.cell}{minimum number of cells required for analysis in an individual}
+\item{min.cell}{minimum number of cells required for analysis in an individual, default is 100}
 
 \item{variable.features.n}{number of high variable features to select for each individual}
 

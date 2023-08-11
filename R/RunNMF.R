@@ -1,4 +1,4 @@
-#' Perform single-cell NMF analysis on individuals(sciNMF)
+#' Single-Cell NMF analysis on Individuals(sciNMF)
 #'
 #' This function performs non-negative matrix factorization (NMF) analysis
 #' on single-cell gene expression matrix for each individual.
@@ -8,9 +8,9 @@
 #' @param dir.output directory to save the output files, default is NULL. If provided, the result of each individual will be saved as .rds files
 #' @param k_range range of values for the number of modules (k) in NMF, default is 4:9
 #' @param samples samples to analyze, default is NULL and all the samples in group.by column will be analyzed
-#' @param project project name for the output files, default is NMF
+#' @param project prefix for transcriptional programs and the output files, default is 'NMF'
 #' @param normalization.method normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'
-#' @param min.cell minimum number of cells required for analysis in an individual
+#' @param min.cell minimum number of cells required for analysis in an individual, default is 100
 #' @param variable.features.n number of high variable features to select for each individual
 #' @param do.scale logical indicating whether to scale the data, default is FALSE
 #' @param do.center logical indicating whether to center the data, default is TRUE
@@ -59,10 +59,10 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
     }
 
     genes = rownames(object@assays$RNA@counts)
-
-    if(rm.MT){genes = genes[-grep("^MT-",genes)]}
-    if(rm.RP.S.L){genes = genes[-grep("^RP[SL][[:digit:]]",genes)]}
-    if(rm.HSP){genes = genes[-grep("^HSP",genes)]}
+    #remove MT, RP, HSP genes
+    if(rm.MT){genes = grep("^MT-",genes, invert = TRUE, value = TRUE)}
+    if(rm.RP.S.L){genes = grep("^RP[SL][[:digit:]]", genes, invert = TRUE, value = TRUE)}
+    if(rm.HSP){genes = grep("^HSP", genes, invert = TRUE, value = TRUE)}
 
 
     clean_counts = object@assays$RNA@counts[genes,]
@@ -75,7 +75,7 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
     idx_cell = object@meta.data[,group.by] == sam
 
     if(sum(idx_cell) < min.cell){
-        message('Sample ',sam,' has only ',sum(idx_cell),' cells less than ',min.cell,' cells, skip it\n')
+        message('Sample ',sam,' has only ',sum(idx_cell),' cells less than ',min.cell,', cells, skip it\n')
         return(NULL)
     }
     srt = Seurat::CreateSeuratObject(counts = clean_counts[,idx_cell], meta.data = object@meta.data[idx_cell,])
