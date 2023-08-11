@@ -57,6 +57,10 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
     if(is.null(samples)){
         samples = unique(object@meta.data[,group.by])
     }
+    if(any(is.na(samples))){
+        warning('The ',group.by, 'column contains NA and those cells are removed!')
+        samples = na.omit(samples)
+    }
 
     genes = rownames(object@assays$RNA@counts)
     #remove MT, RP, HSP genes
