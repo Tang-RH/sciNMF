@@ -58,7 +58,7 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
         samples = unique(object@meta.data[,group.by])
     }
     if(any(is.na(samples))){
-        warning('The ',group.by, 'column contains NA and those cells are removed!')
+        warning('The ',group.by, ' column contains NA and those cells are removed!')
         samples = na.omit(samples)
         object = object[,object@meta.data[,group.by] %in% samples]
     }
