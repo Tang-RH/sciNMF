@@ -54,13 +54,14 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
                   rm.MT = TRUE, rm.RP.S.L = TRUE, rm.HSP = TRUE,
                   loss = "mse", max.iter = 5000, method  = "scd", ...){
 
+    if(any(is.na(object@meta.data[, group.by]))){
+        warning("The ", group.by, " column contains NA and those cells are removed!")
+        idx_cell = !is.na(object@meta.data[, group.by])
+        object = object[,idx_cell]
+    }
+    
     if(is.null(samples)){
         samples = unique(object@meta.data[,group.by])
-    }
-    if(any(is.na(samples))){
-        warning('The ',group.by, ' column contains NA and those cells are removed!')
-        samples = na.omit(samples)
-        object = object[,object@meta.data[,group.by] %in% samples]
     }
 
     genes = rownames(object@assays$RNA@counts)
@@ -80,14 +81,15 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
     idx_cell = object@meta.data[,group.by] == sam
 
     if(sum(idx_cell) < min.cell){
-        message('Sample ',sam,' has only ',sum(idx_cell),' cells less than ',min.cell,', cells, skip it\n')
+        message('Sample ',sam,' has only ',sum(idx_cell),' cells less than ',min.cell,' cells, skip it\n')
         return(NULL)
     }
     srt = Seurat::CreateSeuratObject(counts = clean_counts[,idx_cell], meta.data = object@meta.data[idx_cell,])
 
 
     if(normalization.method == 'SCT'){
-        srt = Seurat::SCTransform(srt,verbose = FALSE, do.scale = do.scale,
+        #I don't know why error for Seurat::SCTransform
+        srt = SCTransform(srt,verbose = FALSE, do.scale = do.scale,
                                   do.center = do.center, variable.features.n = variable.features.n)
         data = Seurat::GetAssayData(srt, assay = 'SCT', slot = 'scale.data')
 
