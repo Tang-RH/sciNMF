@@ -113,7 +113,8 @@ RobustProgram = function(WH.list, top = 50, IQR.cut = 0.1, median.cut = 0, intra
     colnames(mat_ovlp_all) = rownames(mat_ovlp_all) = unlist(ls_pat_names, use.names = FALSE)
     
     ls_keep_pg = lapply(1:length(ls_pat_pg), function(pat){
-        sub_mat_ovlp = mat_ovlp_all[match(names(ls_pat_pg[[pat]]), colnames(mat_ovlp_all)), -match(names(ls_pat_pg[[pat]]), colnames(mat_ovlp_all))]
+        idx_pgs = match(names(ls_pat_pg[[pat]]), colnames(mat_ovlp_all))
+        sub_mat_ovlp = mat_ovlp_all[idx_pgs, -idx_pgs, drop = FALSE]
         #the sub_mat_ovlp doesn't contain the program itself, so >= inter.rep
         idx_inter = apply(sub_mat_ovlp, 1, function(pgop){ sum(pgop >= inter.min) >= inter.rep })
         
