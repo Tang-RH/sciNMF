@@ -88,7 +88,7 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
 
 
     if(normalization.method == 'SCT'){
-        #I don't know why erro for Seurat::SCTransform
+        #I don't know why error for Seurat::SCTransform
         srt = SCTransform(srt,verbose = FALSE, do.scale = do.scale,
                                   do.center = do.center, variable.features.n = variable.features.n)
         data = Seurat::GetAssayData(srt, assay = 'SCT', slot = 'scale.data')
