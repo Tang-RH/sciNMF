@@ -52,12 +52,12 @@
 #'
 #' @importFrom ComplexHeatmap pheatmap
 #' @importFrom paletteer paletteer_d paletteer_c
-#' @importFrom stats dist hclust as.dist cor
+#' @importFrom stats dist hclust as.dist cor setNames
 #' @export
 OvlpHeatmap = function(ovlp, cut.num = NA, border="grey",
                        method.clustering = "ward.D2",
                        distance.clustering = "correlation",
-                       annotation = NA, color.annotation = NA,
+                       annotation = NULL, color.annotation = NULL,
                        cluster.name = 'MetaProgram', cluster.key = 'MP_',
                        name = 'Share Genes', show.colnames = FALSE, show.rownames = TRUE, 
                        breaks = 0:25, color = c('white',rev(as.character(paletteer::paletteer_c("viridis::magma", 32))[8:32])),...){
@@ -92,7 +92,7 @@ OvlpHeatmap = function(ovlp, cut.num = NA, border="grey",
     }
     
     
-    if(!is.na(annotation)){
+    if(!is.null(annotation)){
         anno = cbind(anno , annotation)
         anno_color = c(anno_color, color.annotation)
     }
