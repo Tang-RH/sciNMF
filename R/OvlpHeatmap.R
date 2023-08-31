@@ -8,9 +8,11 @@
 #' @param border Color of the heatmap borders.
 #' @param method.clustering The clustering method. Possible values
 #' are all the methods supported by \code{\link[stats]{hclust}} such as \code{"ward.D2"}, \code{"single"}, \code{"average"}, etc. Default is \code{"ward.D2"}.
-#' @param distance.clustering The distance measure used for clustering. Possible values are
-#' \code{"correlation"} for Pearson correlation, \code{"Jaccard"} for Jaccard similarity and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
-#' Default is \code{"correlation"}. If this parameter is set as \code{"Jaccard"}, the \code{Jaccard} parameter in \code{\link{OverlapMat}} should be set as \code{TRUE}.
+#' @param distance.clustering The distance measure used for clustering. Possible values are \code{"Intersection"} for intersection between two programs as similarity, 
+#' \code{"Jaccard"} for Jaccard similarity, 
+#' \code{"correlation"} for Pearson correlation and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
+#' Default is \code{"Intersection"}. If this parameter is set as \code{"Jaccard"}, the \code{Jaccard} parameter in \code{\link{OverlapMat}} should be set as \code{TRUE}.
+#' @param max.intersect When the \code{"distance.clustering"} is set to \code{"Intersection"}, the distance between two programs will be calculate as the difference of \code{max.intersect} and \code{intersection}. Default is 50.
 #' @param annotation A data.frame containing additional annotations to be shown as row annotations on the heatmap, default is NA.
 #' @param color.annotation A list of colors to be used for the annotations, default is NA. The names of this list should match with the colnames of annotation data.frame
 #' @param cluster.name The name of the cluster column in the annotation data.frame, default is 'MetaProgram'.
@@ -49,28 +51,29 @@
 #'
 #' @seealso \code{ComplexHeatmap::\link[ComplexHeatmap]{pheatmap}} to customize the heatmap appearance.
 #' @seealso \code{stats::\link[stats]{hclust}} for hierarchical clustering based on the specified number of clusters.
-#'
 #' @importFrom ComplexHeatmap pheatmap
 #' @importFrom paletteer paletteer_d paletteer_c
 #' @importFrom stats dist hclust as.dist cor setNames
 #' @export
 OvlpHeatmap = function(ovlp, cut.num = NA, border="grey",
                        method.clustering = "ward.D2",
-                       distance.clustering = "correlation",
+                       distance.clustering = "Intersection", max.intersect = 50,
                        annotation = NULL, color.annotation = NULL,
                        cluster.name = 'MetaProgram', cluster.key = 'MP_',
                        name = 'Share Genes', show.colnames = FALSE, show.rownames = TRUE, 
                        breaks = 0:25, color = c('white',rev(as.character(paletteer::paletteer_c("viridis::magma", 32))[8:32])),...){
     
-    if(distance.clustering == "correlation"){
-        distance = as.dist(1-cor(ovlp))
+    if(distance.clustering == "Intersection"){
+        res_dist = as.dist(max.intersect-ovlp)
     }else if(distance.clustering == "Jaccard"){
-        distance = as.dist(1-ovlp)
+        res_dist = as.dist(1-ovlp)
+    }else if(distance.clustering == "correlation"){
+        res_dist = as.dist(1-cor(ovlp))
     }else{
-        distance = dist(ovlp, method = distance.clustering)
+        res_dist = dist(ovlp, method = distance.clustering)
     }
     
-    res_hclust = hclust(distance, method = method.clustering)
+    res_hclust = hclust(res_dist, method = method.clustering)
     
     #indicate if the user cut.num is existing
     user_cut = FALSE

@@ -9,14 +9,16 @@ OvlpHeatmap(
   cut.num = NA,
   border = "grey",
   method.clustering = "ward.D2",
-  distance.clustering = "correlation",
-  annotation = NA,
-  color.annotation = NA,
+  distance.clustering = "Intersection",
+  max.intersect = 50,
+  annotation = NULL,
+  color.annotation = NULL,
   cluster.name = "MetaProgram",
   cluster.key = "MP_",
   name = "Share Genes",
   show.colnames = FALSE,
-  breaks = c(0:25),
+  show.rownames = TRUE,
+  breaks = 0:25,
   color = c("white", rev(as.character(paletteer::paletteer_c("viridis::magma",
     32))[8:32])),
   ...
@@ -33,9 +35,12 @@ return will be a list contained a Heatmap and cluster result.}
 \item{method.clustering}{The clustering method. Possible values
 are all the methods supported by \code{\link[stats]{hclust}} such as \code{"ward.D2"}, \code{"single"}, \code{"average"}, etc. Default is \code{"ward.D2"}.}
 
-\item{distance.clustering}{The distance measure used for clustering. Possible values are
-\code{"correlation"} for Pearson correlation, \code{"Jaccard"} for Jaccard similarity and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
-Default is \code{"correlation"}. If this parameter is set as \code{"Jaccard"}, the \code{Jaccard} parameter in \code{\link{OverlapMat}} should be set as \code{TRUE}.}
+\item{distance.clustering}{The distance measure used for clustering. Possible values are \code{"Intersection"} for intersection between two programs as similarity, 
+\code{"Jaccard"} for Jaccard similarity, 
+\code{"correlation"} for Pearson correlation and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
+Default is \code{"Intersection"}. If this parameter is set as \code{"Jaccard"}, the \code{Jaccard} parameter in \code{\link{OverlapMat}} should be set as \code{TRUE}.}
+
+\item{max.intersect}{When the \code{"distance.clustering"} is set to \code{"Intersection"}, the distance between two programs will be calculate as the difference of \code{max.intersect} and \code{intersection}. Default is 50.}
 
 \item{annotation}{A data.frame containing additional annotations to be shown as row annotations on the heatmap, default is NA.}
 

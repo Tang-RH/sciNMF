@@ -8,7 +8,8 @@ ClusterMetricsPlot(
   mat.ovlp,
   num.clusters = 2:20,
   ncol = 3,
-  distance.clustering = "correlation",
+  distance.clustering = "Intersection",
+  max.intersect = 50,
   method.clustering = "ward.D2"
 )
 }
@@ -20,9 +21,12 @@ calculate evaluation metrics for each specified number of clusters. Default is 2
 
 \item{ncol}{The number of columns for arranging subplots in the plot area. Default is 3.}
 
-\item{distance.clustering}{The distance measure used for clustering. Possible values are
-\code{"correlation"} for Pearson correlation, \code{"Jaccard"} for Jaccard similarity and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
-Default is \code{"correlation"}. If this parameter is set as \code{"Jaccard"}, the \code{Jaccard} parameter in \code{\link{OverlapMat}} should be set as \code{TRUE}.}
+\item{distance.clustering}{The distance measure used for clustering. Possible values are \code{"Intersection"} for intersection between two programs as similarity, 
+\code{"Jaccard"} for Jaccard similarity, 
+\code{"correlation"} for Pearson correlation and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
+Default is \code{"Intersection"}. If this parameter is set as \code{"Jaccard"}, the \code{Jaccard} parameter in \code{\link{OverlapMat}} should be set as \code{TRUE}.}
+
+\item{max.intersect}{When the \code{"distance.clustering"} is set to \code{"Intersection"}, the distance between two programs will be calculate as the difference of \code{max.intersect} and \code{intersection}. Default is 50.}
 
 \item{method.clustering}{The clustering method. Possible values are all the methods supported by \code{\link[stats]{hclust}},
 such as \code{"ward.D2"}, \code{"single"}, \code{"average"}, etc. Default is \code{"ward.D2"}.}
