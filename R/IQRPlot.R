@@ -26,7 +26,7 @@
 #' @param median.cut The cutoff value for median. Programs with median above this value will be kept in the plot.
 #' @param grid A logical value indicating whether to arrange the plots of samples in a grid (TRUE) or return a list of ggplot objects (FALSE).
 #' @param ncol Determines the number of columns when arranging the plots in a grid. If NULL, it will be automatically determined based on the number of samples.
-#'
+#' @param align (Optional) Specifies whether graphs in the grid should be horizontally ("h") or vertically ("v") aligned. Options are "none" (default), "hv" (align in both directions), "h", and "v".
 #' @details
 #' First, all the program usages for each cell will be normalized to 1. Then the IQR and median usage of each program will be calculated for quality control.
 #' The programs with IQR and median usage below the cutoff will be labeled as 'Remove'
@@ -48,7 +48,7 @@
 #'
 #' @export
 #'
-IQRPlot = function(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = NULL){
+IQRPlot = function(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = NULL, align = c("hv",  "h", "v", "none")){
     WH.list = WH.list[!sapply(WH.list, is.null)]
     ls_pl = lapply(WH.list, function(WH){
         #normalize H by col to calculate IQR for each k
@@ -86,7 +86,7 @@ IQRPlot = function(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = N
     })
     if(grid){
         if(is.null(ncol)){ncol = round(sqrt(length(WH.list)))}
-        ls_pl = cowplot::plot_grid(plotlist = ls_pl, ncol = ncol)
+        ls_pl = cowplot::plot_grid(plotlist = ls_pl, ncol = ncol, align = align)
     }
     return(ls_pl)
 }

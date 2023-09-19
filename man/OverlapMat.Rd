@@ -4,14 +4,16 @@
 \alias{OverlapMat}
 \title{Calculate Overlap Matrix}
 \usage{
-OverlapMat(ls1, ls2 = ls1, Jaccard = FALSE)
+OverlapMat(ls1, ls2 = ls1, Dice = FALSE, Jaccard = FALSE)
 }
 \arguments{
 \item{ls1}{The first list of gene sets for which the overlap is to be calculated.}
 
 \item{ls2}{The second list of gene sets for which the overlap is to be calculated. By default, it is set to \code{ls1}, which means the function calculates the overlap of \code{ls1} with itself.}
 
-\item{Jaccard}{A logical value indicating whether to calculate Jaccard similarity. If \code{TRUE}, the function calculates the Jaccard similarity between the gene sets; otherwise, it calculates the number of the intersection.}
+\item{Dice}{A logical value indicating whether to calculate Dice similarity. Default is FALSE.}
+
+\item{Jaccard}{A logical value indicating whether to calculate Jaccard similarity. Default is FALSE.}
 }
 \value{
 A matrix representing the overlap between gene sets in the input lists.

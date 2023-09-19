@@ -4,7 +4,14 @@
 \alias{IQRPlot}
 \title{IQRPlot: Generate Boxplots with IQR and Median Filter}
 \usage{
-IQRPlot(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = NULL)
+IQRPlot(
+  WH.list,
+  IQR.cut = 0.1,
+  median.cut = 0,
+  grid = TRUE,
+  ncol = NULL,
+  align = c("hv", "h", "v", "none")
+)
 }
 \arguments{
 \item{WH.list}{A nested list containing NMF results for each individual, generated from the \code{\link{RunNMF}} function. The structure of WH.list should be:
@@ -31,6 +38,8 @@ IQRPlot(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = NULL)
 \item{grid}{A logical value indicating whether to arrange the plots of samples in a grid (TRUE) or return a list of ggplot objects (FALSE).}
 
 \item{ncol}{Determines the number of columns when arranging the plots in a grid. If NULL, it will be automatically determined based on the number of samples.}
+
+\item{align}{(Optional) Specifies whether graphs in the grid should be horizontally ("h") or vertically ("v") aligned. Options are "none" (default), "hv" (align in both directions), "h", and "v".}
 }
 \value{
 A girded ggplot object or a list of ggplot objects containing boxplot for each program with IQR and median filtering.

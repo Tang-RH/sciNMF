@@ -30,7 +30,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' result <- RunNMF(SeuratObject, group.by = "Patient")
+#' ls_WH <- RunNMF(SeuratObject, group.by = "Patient")
 #' }
 #'
 #' @seealso \code{NNLM::\link[NNLM]{nnmf}}
@@ -132,6 +132,7 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
     return(WHs)
     }
     names(ls_res) = samples
+    ls_res = ls_res[!sapply(ls_res, is.null)]
     message('All Done!')
     return(ls_res)
 }

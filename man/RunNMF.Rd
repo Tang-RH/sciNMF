@@ -77,7 +77,7 @@ on single-cell gene expression matrix for each individual.
 }
 \examples{
 \dontrun{
-result <- RunNMF(SeuratObject, group.by = "Patient")
+ls_WH <- RunNMF(SeuratObject, group.by = "Patient")
 }
 
 }
