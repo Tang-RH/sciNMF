@@ -8,15 +8,15 @@ RunNMF(
   object,
   group.by,
   dir.output = NULL,
-  k_range = 4:9,
+  k_range = 3:8,
   samples = NULL,
   project = "NMF",
   normalization.method = "SCT",
-  min.cell = 100,
-  variable.features.n = 5000,
+  min.cell = 10,
+  variable.features.n = 7000,
   do.scale = FALSE,
   do.center = TRUE,
-  ncore = 5,
+  ncore = 1,
   seed = 123,
   rm.MT = TRUE,
   rm.RP.S.L = TRUE,
@@ -34,7 +34,7 @@ RunNMF(
 
 \item{dir.output}{directory to save the output files, default is NULL. If provided, the result of each individual will be saved as .rds files}
 
-\item{k_range}{range of values for the number of modules (k) in NMF, default is 4:9}
+\item{k_range}{range of values for the number of modules (k) in NMF, default is 3:8}
 
 \item{samples}{samples to analyze, default is NULL and all the samples in group.by column will be analyzed}
 
@@ -42,7 +42,7 @@ RunNMF(
 
 \item{normalization.method}{normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'}
 
-\item{min.cell}{minimum number of cells required for analysis in an individual, default is 100}
+\item{min.cell}{minimum number of cells required for analysis in an individual, default is 10}
 
 \item{variable.features.n}{number of high variable features to select for each individual}
 

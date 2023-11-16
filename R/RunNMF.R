@@ -6,11 +6,11 @@
 #' @param object a Seurat object
 #' @param group.by name of the column used for grouping cells
 #' @param dir.output directory to save the output files, default is NULL. If provided, the result of each individual will be saved as .rds files
-#' @param k_range range of values for the number of modules (k) in NMF, default is 4:9
+#' @param k_range range of values for the number of modules (k) in NMF, default is 3:8
 #' @param samples samples to analyze, default is NULL and all the samples in group.by column will be analyzed
 #' @param project prefix for transcriptional programs and the output files, default is 'NMF'
 #' @param normalization.method normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'
-#' @param min.cell minimum number of cells required for analysis in an individual, default is 100
+#' @param min.cell minimum number of cells required for analysis in an individual, default is 10
 #' @param variable.features.n number of high variable features to select for each individual
 #' @param do.scale logical indicating whether to scale the data, default is FALSE
 #' @param do.center logical indicating whether to center the data, default is TRUE
@@ -47,10 +47,10 @@
 #' @references
 #' NNLM: \url{https://github.com/linxihui/NNLM/}
 
-RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = NULL, project = "NMF",
-                  normalization.method = "SCT", min.cell = 100, variable.features.n = 5000,
+RunNMF = function(object, group.by, dir.output = NULL, k_range = 3:8, samples = NULL, project = "NMF",
+                  normalization.method = "SCT", min.cell = 10, variable.features.n = 7000,
                   do.scale = FALSE, do.center = TRUE,
-                  ncore = 5, seed = 123,
+                  ncore = 1, seed = 123,
                   rm.MT = TRUE, rm.RP.S.L = TRUE, rm.HSP = TRUE,
                   loss = "mse", max.iter = 5000, method  = "scd", ...){
 
@@ -84,7 +84,8 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
         message('Sample ',sam,' has only ',sum(idx_cell),' cells less than ',min.cell,' cells, skip it\n')
         return(NULL)
     }
-    srt = Seurat::CreateSeuratObject(counts = clean_counts[,idx_cell], meta.data = object@meta.data[idx_cell,])
+    idx_0_gene = rowSums(clean_counts[,idx_cell]) == 0
+    srt = Seurat::CreateSeuratObject(counts = clean_counts[!idx_0_gene, idx_cell], meta.data = object@meta.data[idx_cell,])
 
 
     if(normalization.method == 'SCT'){
@@ -110,6 +111,7 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 4:9, samples = 
     data = data[apply(data, 1, var) > 0, ]
 
     ls_WH = lapply(k_range, function(k){
+        set.seed(seed)
         res_nmf = NNLM::nnmf(data, k = k, loss = loss, max.iter = max.iter, method  = method, ...)
         H = res_nmf$H
         W = res_nmf$W

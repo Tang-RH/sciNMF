@@ -48,7 +48,7 @@
 #'
 #' @export
 #'
-IQRPlot = function(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = NULL, align = c("hv",  "h", "v", "none")){
+IQRPlot = function(WH.list, IQR.cut = 0.1, median.cut = 0.02, grid = TRUE, ncol = NULL, align = c("hv",  "h", "v", "none")){
     WH.list = WH.list[!sapply(WH.list, is.null)]
     ls_pl = lapply(WH.list, function(WH){
         #normalize H by col to calculate IQR for each k
@@ -62,7 +62,6 @@ IQRPlot = function(WH.list, IQR.cut = 0.1, median.cut = 0, grid = TRUE, ncol = N
         
 
         df_pl = tidyr::gather(data.frame(t(H)),'Program','Ratio')
-        df_pl$Program = rep(rownames(H), each = ncol(H))
         mat_quat = apply(H,1, quantile)
         idx_median = mat_quat['50%',] > median.cut
         idx_IQR = mat_quat['75%',] - mat_quat['25%',] > IQR.cut

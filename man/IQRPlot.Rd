@@ -7,7 +7,7 @@
 IQRPlot(
   WH.list,
   IQR.cut = 0.1,
-  median.cut = 0,
+  median.cut = 0.02,
   grid = TRUE,
   ncol = NULL,
   align = c("hv", "h", "v", "none")

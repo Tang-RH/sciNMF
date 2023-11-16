@@ -30,13 +30,13 @@
 #' Number of overlap genes greater than or equal to \code{intra.min} are considered similar within the same individual
 #' Default is 35
 #' @param intra.rep The minimum number of similar programs. If a program has less than \code{intra.rep} similar programs in an individual,
-#' it will be removed. Default is 2
+#' it will be removed. Default is 1
 #' @param inter.filter Logical value indicates whether filter the programs based on inter-tumor similarities. Default is TRUE
 #' @param inter.min The threshold to identify robust programs across individuals
 #' Number of overlap genes greater than or equal to \code{inter.min} are considered similar across individuals
 #' Default is 10
-#' @param inter.rep The minimum number of individuals of a program must be present to be considered as a robust program after intra-tumor filtering.
-#' Default is 2
+#' @param inter.rep The minimum number of similar programs across other individuals to be considered as a robust program after intra-tumor filtering.
+#' Default is 1
 #' @param intra.max The threshold to identify redundant programs within an individual
 #' Number of overlap genes greater than or equal to \code{intra.max} are considered redundant within the same individual
 #' Default is 10
@@ -45,12 +45,12 @@
 #' Each element of the list represents a program and contains \code{top} genes with gene names.
 #'
 #' @details
-#' The function first performs QC on the programs based on the interquartile range (IQR) and median gene usage
-#' Programs with low IQR or median gene usage are filtered out.
+#' The function first performs QC on the programs based on the interquartile range (IQR) and median usage (the intra-rank-normalized H matrix)
+#' Programs with low IQR and median usage are filtered out.
 #'
-#' Then, it removes programs that have less than \code{intra.rep} similar programs(number of overlap genes between two programs >= \code{inter.min}) in the same individual (for selecting robust programs).
+#' Then, it removes programs that have less than \code{intra.rep} similar programs(number of overlap genes between two programs >= \code{intra.min}) in the same individual (for selecting robust programs).
 #'
-#' Next, it filters out programs that are not robustly present(number of overlap genes between two programs >= \code{intra.min}) across individuals (more than \code{intra.rep}).
+#' Next, it filters out programs which have less than \code{inter.rep} similar programs (number of overlap genes between two programs >= \code{inter.min}) across individuals.
 #'
 #' Finally, it further filters out redundant programs, only selects programs that have a intersection smaller than \code{intra.max} with a previously selected programs in an individual.
 #'
@@ -68,8 +68,8 @@
 #'
 
 
-RobustProgram = function(WH.list, top = 50, IQR.cut = 0.1, median.cut = 0, intra.min = 35, intra.rep = 2,
-                         inter.filter = TRUE,inter.min = 10, inter.rep = 2, intra.max = 10){
+RobustProgram = function(WH.list, top = 50, IQR.cut = 0.1, median.cut = 0, intra.min = 35, intra.rep = 1,
+                         inter.filter = TRUE,inter.min = 10, inter.rep = 1, intra.max = 10){
     
     WH.list = WH.list[!sapply(WH.list, is.null)]
     #QC by IQR and median useage
@@ -90,7 +90,7 @@ RobustProgram = function(WH.list, top = 50, IQR.cut = 0.1, median.cut = 0, intra
         
         W_filter = WH$W[, idx_median & idx_IQR]
         
-        pgs = lapply(setNames(colnames(W_filter),colnames(W_filter)), function(pg){
+        pgs = lapply(setNames(nm = colnames(W_filter)), function(pg){
             pg = W_filter[,pg]
             head(sort(pg, decreasing = TRUE), n = top)
         })
