@@ -29,6 +29,7 @@
 #' @importFrom survival coxph Surv
 #' @importFrom stats setNames
 #' @importFrom grDevices colorRampPalette
+#' @importFrom dplyr arrange
 #'
 #' @seealso
 #' \code{\link[ggplot2]{ggplot}} for customizing the plot appearance.
@@ -86,7 +87,7 @@ MPCoxph = function(mat.exp, cli, gene.list, time = 'OS.time', event = 'OS.status
                 colMeans(sub_exp[gs,])
             })
         }else{
-            stop('Ivalid score.method, must be one of ssgsea, gsva, mean, plage')
+            stop('Ivalid score.method, must be one of ssgsea, gsva, plage, average')
         }
 
         cbind(sub_cli, sub_score)
@@ -110,17 +111,18 @@ MPCoxph = function(mat.exp, cli, gene.list, time = 'OS.time', event = 'OS.status
 
     }) %>% do.call(what = rbind)
 
-    if(show.ns){
-        df_pl$Significance = cut(df_pl$pvalue, breaks = c(0,0.0001,0.001,0.01,0.05,1),
-                                 labels = c('****','***','**','*','ns'))
-    }else{
-        df_pl$Significance = cut(df_pl$pvalue, breaks = c(0,0.0001,0.001,0.01,0.05,1),
-                                 labels = c('****','***','**','*',''))
+    df_pl$Significance = cut(df_pl$pvalue, breaks = c(0,0.0001,0.001,0.01,0.05,1),
+                             labels = c('****','***','**','*','ns'))
+    if(!show.ns){
+        df_pl$Significance = gsub('ns','',df_pl$Significance)
     }
+    
     GroupSize = stats::setNames(sapply(ls_cli,nrow), names(ls_cli))
     df_pl$GroupName = df_pl$Group
     df_pl$GroupSize = GroupSize[df_pl$Group]
     df_pl$Group = paste0(df_pl$Group, '_(n=',df_pl$GroupSize, ')')
+    df_pl = dplyr::arrange(df_pl, -Cindex)
+    
     if(return.df){
         rownames(df_pl) = NULL
         return(df_pl)

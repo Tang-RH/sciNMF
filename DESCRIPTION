@@ -1,7 +1,7 @@
 Package: sciNMF
 Type: Package
 Title: Single Cell Individial Non-negative Matrix Factorization
-Version: 0.0.1
+Version: 0.1.0
 Authors@R: c(person("Ronghan", "Tang", email = "908488796@qq.com", role = c("aut", "cre")),
     person("Zheyang", "Zhang", role = "aut", email = "82795809@qq.com"))
 Maintainer: Ronghan Tang <908488796@qq.com>

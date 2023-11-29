@@ -12,6 +12,7 @@
 #' @param heatmap Logical, indicating whether to generate a heatmap.
 #' @param show.gap Logical, indicating whether to show gaps in the heatmap.
 #' @param border Color for the border in the heatmap.
+#' @param color.mp Color to label the Metaprograms.
 #' @param annotation Additional annotation to be added to the heatmap. It should be a data.frame, each row represents a robust program contained in cluster.result,
 #'  each column represents an annotation item.
 #' @param color.annotation A list object contain the annotation color, the name of each element should match the colnames of annotion data.frame 
@@ -37,26 +38,26 @@
 #' Step2: Remove redundant genes across all MPs, assign the overlap genes by the min rank then max coef across MPs. 
 #' Then MPs contain no enough genes (\code{min.size.MP}) are removed. 
 #'  
-#' Step3: Draw the cluster heatmap of remaining MPs.
+#' Step3(optional): Draw the cluster heatmap of remaining MPs.
 #'
 #'
 #' @import ComplexHeatmap
 #' @import paletteer
 #' @importFrom dplyr %>%
+#' @importFrom stats setNames
 #'
 #' @export
 #'
 #' @seealso \code{ComplexHeatmap::\link[ComplexHeatmap]{pheatmap}}, \code{\link{RunNMF}}, \code{\link{ClusterPG}}
 #'
 MetaProgram = function(WH.list, cluster.result, top = 50,
-                         min.size.MP = 30, key = "MP_", only.gene = TRUE, keep.rep.gene = TRUE,
-                         heatmap = TRUE, show.gap = TRUE,
-                         border="grey", annotation = NULL, color.annotation = NULL,
-                         cluster.name = 'MetaProgram',name = 'Share Genes', 
-                         show.colnames = FALSE, show.rownames = TRUE,
-                         show.anno = TRUE, breaks = 0:25, 
-                         color = c('white',rev(as.character(paletteer::paletteer_c("viridis::magma", 32))[8:32])),...){
-    
+                       min.size.MP = 30, key = "MP_", only.gene = TRUE, keep.rep.gene = TRUE,
+                       heatmap = TRUE, show.gap = TRUE, color.mp = NULL,
+                       border="grey", annotation = NULL, color.annotation = NULL,
+                       cluster.name = 'MetaProgram',name = 'Share Genes', 
+                       show.colnames = FALSE, show.rownames = TRUE,
+                       show.anno = TRUE, breaks = 0:25, 
+                       color = c('white',rev(as.character(paletteer::paletteer_c("viridis::magma", 32))[8:32])),...){
     #step 1
     #generate the metaprogram from cluster result
     WH.list = WH.list[!sapply(WH.list, is.null)]
@@ -72,6 +73,7 @@ MetaProgram = function(WH.list, cluster.result, top = 50,
     if(!all(names(cluster.result) %in% all_pg)){
         warning('Could not find program: ', paste(setdiff(names(cluster.result), all_pg), collapse = ' '), ' in the WH.list')
     }
+    #keep the cluster result contained program
     all_pg = intersect(all_pg, names(cluster.result))
     #keep the cluster order
     cluster.result = cluster.result[names(cluster.result) %in% all_pg]
@@ -85,7 +87,8 @@ MetaProgram = function(WH.list, cluster.result, top = 50,
     }) %>% do.call(what = cbind)
     #gene contain average coef
     ls_mp_df = split(names(cluster.result), cluster.result) %>% lapply(function(pgs){
-        mat_pgs = all_W[,pgs]
+        # some clusters may only have 1 pg
+        mat_pgs = all_W[,pgs,drop = FALSE]
         genes = rowMeans(mat_pgs) %>% sort(decreasing = TRUE) %>% head(n = top)
         df = data.frame(Gene = names(genes), Coef = genes, Rank = 1:top)
     })
@@ -144,20 +147,29 @@ MetaProgram = function(WH.list, cluster.result, top = 50,
         }
     }
     
+    #rename the MP based on RP number
+    cluster.result.id = paste0(key,cluster.result)
+    names(cluster.result.id) = names(cluster.result)
+    cluster.result.id = cluster.result.id[cluster.result.id %in% names(ls_MP)]
+    sorted_Old_Neo = sort(c(table(cluster.result.id)),decreasing = TRUE)
+    ls_MP = ls_MP[names(sorted_Old_Neo)]
+    names(ls_MP) = paste0(key,1:length(ls_MP))
+    
     
     if(!heatmap){return(ls_MP)}
     ###########################
     
     #step 3
-    #heatmap    
-    anno = data.frame(paste0(key,cluster.result))
+    #heatmap
+    # change the cluster name
+    v_Old_Neo = setNames(names(ls_MP),nm = names(sorted_Old_Neo))
+    cluster.result.id = setNames(v_Old_Neo[cluster.result.id], nm = names(cluster.result.id))
+    
+    anno = data.frame(cluster.result.id)
     colnames(anno) = cluster.name
-    #remove some low gene size MPs
-    idx_rp = anno[[cluster.name]] %in% names(ls_MP)
+    
     
     if(show.anno){
-        anno = anno[idx_rp,,drop = FALSE]
-        
         #generate the MP annotation color based on the number
         if(length(ls_MP) <= 51 ){
             anno_color = as.character(paletteer_d("ggsci::default_igv"))[1:length(ls_MP)]
@@ -168,7 +180,21 @@ MetaProgram = function(WH.list, cluster.result, top = 50,
         anno_color = list(setNames(anno_color, unique(anno[[cluster.name]])))
         names(anno_color) = cluster.name
         
+        # for user specific color
+        if(!is.null(color.mp)){
+            if(is.null(names(color.mp))){
+                if(length(color.mp) < length(ls_MP)){
+                    warning('number of color.mp is not enough to mapping MetaProgam number, use defalut color instead\n')
+                    color.mp = anno_color[[cluster.name]]
+                }else{
+                    color.mp = setNames(color.mp[1:length(ls_MP)], names(ls_MP))
+                }
+            }
+            anno_color[[cluster.name]] = color.mp
+        }
+        
         if(!is.null(annotation)){
+            idx_rp = names(cluster.result) %in% names(cluster.result.id)
             anno = cbind(anno , annotation[idx_rp,,drop = FALSE])
             anno_color = c(anno_color, color.annotation)
         }
@@ -176,26 +202,35 @@ MetaProgram = function(WH.list, cluster.result, top = 50,
         anno = anno_color = NA
     }
     
-    keep_rp = names(cluster.result)[idx_rp]
-    loc_keep_rp = match(keep_rp, colnames(all_W))
-    ls_keep_rp = apply(all_W[,loc_keep_rp], 2, function(rp){
+    cluster.result.id = sort(cluster.result.id)
+    loc_rp = match(names(cluster.result.id), colnames(all_W))
+    ls_rp = apply(all_W[,loc_rp], 2, function(rp){
         gene_rp = sort(rp, decreasing = TRUE) %>% names %>% head(top)
         intersect(gene_rp, gene_MP_full)
     })
     
     #the overlap matrix
-    mat_pl = OverlapMat(ls_keep_rp)
+    mat_pl = OverlapMat(ls_rp)
+    
+    ls_rp_set = split(names(cluster.result.id), cluster.result.id)
+    # the true order
+    ls_rp_set = ls_rp_set[names(ls_MP)]
+    order_rps = lapply(ls_rp_set, function(rps){
+        sub_mat = mat_pl[rps,rps,drop = FALSE]
+        rps[order(-colSums(sub_mat))]
+    }) %>% unlist(use.names = FALSE)
     
     #calculate the gap location
     if(show.gap){
-        df_gap = table(cluster.result[idx_rp], dnn = 'Cluster') %>% data.frame
-        df_gap$Cluster = as.character(df_gap$Cluster)
-        df_gap = df_gap[match(as.character(unique(cluster.result[idx_rp])), df_gap$Cluster),]
-        gap = cumsum(df_gap$Freq)
+        gap = cumsum(lengths(ls_rp_set))
     }else{
         gap = NA
     }
+    mat_pl = mat_pl[order_rps,order_rps]
     
+    if(show.anno){
+        anno = anno[order_rps,,drop = FALSE]
+    }
     
     hm = ComplexHeatmap::pheatmap(mat_pl, border=border, name = name, 
                                   annotation_row = anno, annotation_colors = anno_color,

@@ -8,7 +8,7 @@ RunNMF(
   object,
   group.by,
   dir.output = NULL,
-  k_range = 3:8,
+  k.range = 3:8,
   samples = NULL,
   project = "NMF",
   normalization.method = "SCT",
@@ -34,7 +34,7 @@ RunNMF(
 
 \item{dir.output}{directory to save the output files, default is NULL. If provided, the result of each individual will be saved as .rds files}
 
-\item{k_range}{range of values for the number of modules (k) in NMF, default is 3:8}
+\item{k.range}{range of values for the number of modules (k) in NMF, default is 3:8}
 
 \item{samples}{samples to analyze, default is NULL and all the samples in group.by column will be analyzed}
 

@@ -6,7 +6,7 @@
 #' @param object a Seurat object
 #' @param group.by name of the column used for grouping cells
 #' @param dir.output directory to save the output files, default is NULL. If provided, the result of each individual will be saved as .rds files
-#' @param k_range range of values for the number of modules (k) in NMF, default is 3:8
+#' @param k.range range of values for the number of modules (k) in NMF, default is 3:8
 #' @param samples samples to analyze, default is NULL and all the samples in group.by column will be analyzed
 #' @param project prefix for transcriptional programs and the output files, default is 'NMF'
 #' @param normalization.method normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'
@@ -36,7 +36,8 @@
 #' @seealso \code{NNLM::\link[NNLM]{nnmf}}
 #'
 #' @seealso For more information, please see \url{https://github.com/Tang-RH/sciNMF}
-#' @import Seurat
+#' @importFrom Matrix rowSums
+#' @importFrom Seurat CreateSeuratObject SCTransform GetAssayData NormalizeData FindVariableFeatures ScaleData VariableFeatures
 #' @importFrom foreach foreach '%dopar%'
 #' @importFrom doParallel registerDoParallel
 #' @importFrom NNLM nnmf
@@ -47,7 +48,7 @@
 #' @references
 #' NNLM: \url{https://github.com/linxihui/NNLM/}
 
-RunNMF = function(object, group.by, dir.output = NULL, k_range = 3:8, samples = NULL, project = "NMF",
+RunNMF = function(object, group.by, dir.output = NULL, k.range = 3:8, samples = NULL, project = "NMF",
                   normalization.method = "SCT", min.cell = 10, variable.features.n = 7000,
                   do.scale = FALSE, do.center = TRUE,
                   ncore = 1, seed = 123,
@@ -67,12 +68,12 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 3:8, samples = 
     genes = rownames(object@assays$RNA@counts)
     #remove MT, RP, HSP genes
     if(rm.MT){genes = grep("^MT-",genes, invert = TRUE, value = TRUE)}
-    if(rm.RP.S.L){genes = grep("^RP[SL][[:digit:]]", genes, invert = TRUE, value = TRUE)}
+    if(rm.RP.S.L){genes = grep("^RP[SL]", genes, invert = TRUE, value = TRUE)}
     if(rm.HSP){genes = grep("^HSP", genes, invert = TRUE, value = TRUE)}
 
 
     clean_counts = object@assays$RNA@counts[genes,]
-
+    
     registerDoParallel(cores = ncore)
 
     ls_res = foreach(sam = samples ) %dopar% {
@@ -84,12 +85,13 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 3:8, samples = 
         message('Sample ',sam,' has only ',sum(idx_cell),' cells less than ',min.cell,' cells, skip it\n')
         return(NULL)
     }
-    idx_0_gene = rowSums(clean_counts[,idx_cell]) == 0
+
+    idx_0_gene = Matrix::rowSums(clean_counts[,idx_cell]) == 0
+
     srt = Seurat::CreateSeuratObject(counts = clean_counts[!idx_0_gene, idx_cell], meta.data = object@meta.data[idx_cell,])
 
-
     if(normalization.method == 'SCT'){
-        #I don't know why error for Seurat::SCTransform
+        #I don't know why warning for Seurat::SCTransform()
         srt = SCTransform(srt,verbose = FALSE, do.scale = do.scale,
                                   do.center = do.center, variable.features.n = variable.features.n)
         data = Seurat::GetAssayData(srt, assay = 'SCT', slot = 'scale.data')
@@ -110,7 +112,7 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 3:8, samples = 
     data[data < 0] = 0
     data = data[apply(data, 1, var) > 0, ]
 
-    ls_WH = lapply(k_range, function(k){
+    ls_WH = lapply(k.range, function(k){
         set.seed(seed)
         res_nmf = NNLM::nnmf(data, k = k, loss = loss, max.iter = max.iter, method  = method, ...)
         H = res_nmf$H
@@ -128,7 +130,7 @@ RunNMF = function(object, group.by, dir.output = NULL, k_range = 3:8, samples = 
             dir.create(dir.output, recursive = TRUE)
         }
         saveRDS(WHs, paste0(dir.output, '/',project, '_',sam, '_hvg',variable.features.n,
-                          '_k',k_range[1], 'to',tail(k_range,1), '.rds'))
+                          '_k',k.range[1], 'to',tail(k.range,1), '.rds'))
     }
     message('Sample ', sam, ' done!')
     return(WHs)

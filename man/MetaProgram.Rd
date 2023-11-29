@@ -14,6 +14,7 @@ MetaProgram(
   keep.rep.gene = TRUE,
   heatmap = TRUE,
   show.gap = TRUE,
+  color.mp = NULL,
   border = "grey",
   annotation = NULL,
   color.annotation = NULL,
@@ -46,6 +47,8 @@ MetaProgram(
 \item{heatmap}{Logical, indicating whether to generate a heatmap.}
 
 \item{show.gap}{Logical, indicating whether to show gaps in the heatmap.}
+
+\item{color.mp}{Color to label the Metaprograms.}
 
 \item{border}{Color for the border in the heatmap.}
 
@@ -87,7 +90,7 @@ be selected as the MP signature.
 Step2: Remove redundant genes across all MPs, assign the overlap genes by the min rank then max coef across MPs. 
 Then MPs contain no enough genes (\code{min.size.MP}) are removed. 
  
-Step3: Draw the cluster heatmap of remaining MPs.
+Step3(optional): Draw the cluster heatmap of remaining MPs.
 }
 \seealso{
 \code{ComplexHeatmap::\link[ComplexHeatmap]{pheatmap}}, \code{\link{RunNMF}}, \code{\link{ClusterPG}}

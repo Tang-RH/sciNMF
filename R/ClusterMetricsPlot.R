@@ -18,9 +18,9 @@
 #' @return Returns the generated cluster metrics plot, containing line and scatter plots for clustering
 #' evaluation metrics corresponding to different numbers of clusters.
 #'
-#' @import ggplot2
+#' @importFrom ggplot2 ggplot geom_line geom_point theme_bw facet_wrap
 #' @importFrom fpc cqcluster.stats
-#' @importFrom stats hclust dist as.dist
+#' @importFrom stats hclust dist as.dist cutree
 #'
 #' @examples
 #'
@@ -42,8 +42,6 @@
 #' @seealso
 #' \code{\link{OverlapMat}}, \code{\link[stats]{hclust}}, \code{\link[stats]{dist}},  \code{\link[fpc]{cqcluster.stats}}
 #'
-#' @importFrom stats cutree
-#'
 #' @export
 #'
 ClusterMetricsPlot = function(mat.ovlp, num.clusters = 2:20, ncol = 3,
@@ -61,9 +59,13 @@ ClusterMetricsPlot = function(mat.ovlp, num.clusters = 2:20, ncol = 3,
     }
     
     res_cluster = hclust(res_dist, method = method.clustering)
+    # avoid invalid cluster number
+    max_cluster_number = nrow(mat.ovlp)-1
+    
+    num.clusters = intersect(num.clusters, 2:max_cluster_number)
     
     df_pl = lapply(num.clusters, function(k){
-        cluster = cutree(res_cluster, k)
+        cluster = stats::cutree(res_cluster, k)
         res_evaluation = fpc::cqcluster.stats(res_dist, cluster)
         sub_df = data.frame(Index = c('SilhouetteWidth','Calinski-Harabasz','SeparationIndex', 'WidestGap',
                                       'PearsonGamma','DunnIndex'),
