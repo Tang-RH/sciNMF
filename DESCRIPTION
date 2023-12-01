@@ -5,8 +5,7 @@ Version: 0.1.0
 Authors@R: c(person("Ronghan", "Tang", email = "908488796@qq.com", role = c("aut", "cre")),
     person("Zheyang", "Zhang", role = "aut", email = "82795809@qq.com"))
 Maintainer: Ronghan Tang <908488796@qq.com>
-Description: This is a package for non-negative matrix factorization (NMF) on single cell RNA seq data
-    to investigate the heterogeneity of cellular transcriptomic states in individuals.
+Description: sciNMF (Single-Cell Individual Non-Negative Matrix Factorization) is an R package designed for exploring the heterogeneity of cellular transcriptional states across individuals using single-cell RNA-seq data.
 License: MIT + file LICENSE
 Imports: Seurat, foreach, doParallel, magrittr, dplyr, cowplot, tidyr,
         stats, NNLM, fpc, methods, ComplexHeatmap, paletteer, ggplot2,
