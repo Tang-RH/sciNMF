@@ -10,7 +10,7 @@
 #' 
 #' @param title The title of the plot, default is 'Enriched GeneSets'
 #' 
-#' @param color A vector of colors to be used in the dot plot.
+#' @param color A vector of colors to indicate the significance.
 #'
 #' @return A ggplot object representing the enrichment results.
 #'

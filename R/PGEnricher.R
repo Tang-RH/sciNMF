@@ -3,8 +3,8 @@
 #' Performing universal enrichment analysis on transcriptional programs (gene sets)
 #'
 #' @param pg.list A list containing transcriptional programs, each program is composed with genes.
-#' @param gene.set User input annotation of TERM TO GENE mapping, a data.frame of 2 column with term and gene. All built-in data.frame object
-#' are \code{"GO_BP", "GO_CC", "GO_MM", "Hallmark", "CellMarker"}. You can set a character vector for using the built-in gene sets. Default is "GO_BP"
+#' @param gene.set User input annotation of TERM TO GENE mapping, a data.frame with 2 column 'term' and 'gene.' All built-in data.frame object
+#' are \code{"GO_BP", "GO_CC", "GO_MM", "Hallmark", "CellMarker"}. You can set a character vector to use the built-in gene sets. Default is "GO_BP"
 #' @param universe background genes. If missing, the all genes listed in the database (eg gene.set data.frame) will be used as background.
 #' @param only.df Logical, if TRUE, the function will return only the data.frame for each enrichment results.
 #' If FALSE, the full enrichment result object will be returned. Default is TRUE.

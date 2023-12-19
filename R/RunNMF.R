@@ -24,7 +24,7 @@
 #' @param method method for \code{NNLM::\link[NNLM]{nnmf}} computation, default is 'scd'.
 #' @param ... Additional arguments for \code{NNLM::\link[NNLM]{nnmf}}.
 #'
-#' @return A list of matrices containing the NMF results named by individuals in group.by column; for each individual, H and W matrices will be return
+#' @return A list of matrices containing the NMF results named by individuals in group.by column; for each individual, H and W matrices will be returned.
 #'
 #' @export
 #'

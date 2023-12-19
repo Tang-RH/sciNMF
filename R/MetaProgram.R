@@ -12,7 +12,7 @@
 #' @param heatmap Logical, indicating whether to generate a heatmap, default is TRUE.
 #' @param show.gap Logical, indicating whether to show gaps in the heatmap, default is TRUE.
 #' @param border Color for the border in the heatmap, default is 'grey'.
-#' @param color.mp Color to label the Metaprograms.
+#' @param color.mp The color used to label the Metaprograms.
 #' @param annotation Additional annotation to be added to the heatmap. It should be a data.frame, each row represents a robust program contained in cluster.result,
 #'  each column represents an annotation item.
 #' @param color.annotation A list object contain the annotation color, the name of each element should match the colnames of annotion data.frame 

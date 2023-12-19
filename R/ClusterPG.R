@@ -1,6 +1,6 @@
 #' Cluster Programs Based on Overlap Matrix
 #'
-#' This function clusters robust programs using the provided overlap matrix, 
+#' This function clusters robust programs using the provided overlap matrix 
 #' and filters the clusters based on their size (number of robust programs).
 #'
 #' @param mat.ovlp A matrix representing the overlap between programs.
@@ -10,7 +10,7 @@
 #'   Options include "ward.D2" (default), "single", "complete" and other methods supported by \code{\link[stats]{hclust}}
 #' @param distance.clustering Method for calculating distances between clusters. 
 #'   Options include "Intersection" (default), "Jaccard", "correlation", and any other valid method for \code{\link[stats]{dist}}.
-#' @param max.intersect Maximum intersection value (used when distance.clustering = "Intersection").
+#' @param max.intersect Maximum intersection value (used when distance.clustering = "Intersection"). Default is 50.
 #'
 #' @return A vector indicating the cluster assignment for each program.
 #'

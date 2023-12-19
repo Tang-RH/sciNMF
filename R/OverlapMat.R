@@ -1,6 +1,6 @@
 #' Calculate Overlap Matrix
 #'
-#' The \code{OverlapMat} function calculates the overlap between two lists of gene sets and creates an overlap matrix.
+#' The function calculates the overlap between two lists of gene sets and creates an overlap matrix.
 #'
 #' @param ls1 The first list of gene sets for which the overlap is to be calculated.
 #' @param ls2 The second list of gene sets for which the overlap is to be calculated. By default, it is set to \code{ls1}, which means the function calculates the overlap of \code{ls1} with itself.
