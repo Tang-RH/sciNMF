@@ -21,7 +21,7 @@ EnrichDotPlot(
 
 \item{title}{The title of the plot, default is 'Enriched GeneSets'}
 
-\item{color}{A vector of colors to be used in the dot plot.}
+\item{color}{A vector of colors to indicate the significance.}
 }
 \value{
 A ggplot object representing the enrichment results.

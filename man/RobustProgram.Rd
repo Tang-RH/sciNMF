@@ -57,8 +57,8 @@ Default is 10}
 \item{inter.rep}{The minimum number of similar programs across other individuals to be considered as a robust program after intra-tumor filtering.
 Default is 1}
 
-\item{intra.max}{The threshold to identify redundant programs within an individual
-Number of overlap genes greater than or equal to \code{intra.max} are considered redundant within the same individual
+\item{intra.max}{The threshold to identify redundant programs within an individual.
+Number of overlap genes greater than or equal to \code{intra.max} are considered redundant within the same individual.
 Default is 10}
 }
 \value{

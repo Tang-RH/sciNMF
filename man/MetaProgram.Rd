@@ -48,7 +48,7 @@ MetaProgram(
 
 \item{show.gap}{Logical, indicating whether to show gaps in the heatmap, default is TRUE.}
 
-\item{color.mp}{Color to label the Metaprograms.}
+\item{color.mp}{The color used to label the Metaprograms.}
 
 \item{border}{Color for the border in the heatmap, default is 'grey'.}
 

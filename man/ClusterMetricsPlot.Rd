@@ -22,22 +22,21 @@ calculate evaluation metrics for each specified number of clusters. Default is 2
 \item{ncol}{The number of columns for arranging subplots in the plot area. Default is 3.}
 
 \item{distance.clustering}{The distance measure used for clustering. Possible values are \code{"Intersection"} for intersection between two programs as similarity, 
-\code{"Jaccard"} for Jaccard similarity,
-\code{"correlation"} for Pearson correlation and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
+\code{"Jaccard"} for Jaccard similarity, \code{"correlation"} for Pearson correlation and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
 Default is \code{"Intersection"}. If this parameter is set as \code{"Jaccard"}, the \code{Jaccard} parameter in \code{\link{OverlapMat}} should be set as \code{TRUE}.}
 
-\item{max.intersect}{When the \code{"distance.clustering"} is set to \code{"Intersection"}, the distance between two programs will be calculate as the difference of \code{max.intersect} and \code{intersection}. Default is 50.}
+\item{max.intersect}{When the \code{"distance.clustering"} is set to \code{"Intersection"}, the distance between two programs will be calculated as the difference of \code{max.intersect} and \code{intersection}. Default is 50.}
 
 \item{method.clustering}{The clustering method. Possible values are all the methods supported by \code{\link[stats]{hclust}},
 such as \code{"ward.D2"}, \code{"single"}, \code{"average"}, etc. Default is \code{"ward.D2"}.}
 }
 \value{
-Returns the generated cluster metrics plot, containing line and scatter plots for clustering
-evaluation metrics corresponding to different numbers of clusters.
+Returns a plot displaying cluster metrics.
+ The plot includes lines and scatter points representing clustering evaluation metrics for different numbers of clusters.
 }
 \description{
 This function is used to plot the clustering results of provided different numbers of clusters,
-calculating and visualizing some clustering evaluation metrics.
+It calculates and visualizes key clustering evaluation metrics to aid in the assessment of clustering performance.
 }
 \examples{
 

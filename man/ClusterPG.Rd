@@ -26,13 +26,13 @@ Options include "ward.D2" (default), "single", "complete" and other methods supp
 \item{distance.clustering}{Method for calculating distances between clusters. 
 Options include "Intersection" (default), "Jaccard", "correlation", and any other valid method for \code{\link[stats]{dist}}.}
 
-\item{max.intersect}{Maximum intersection value (used when distance.clustering = "Intersection").}
+\item{max.intersect}{Maximum intersection value (used when distance.clustering = "Intersection"). Default is 50.}
 }
 \value{
 A vector indicating the cluster assignment for each program.
 }
 \description{
-This function clusters robust programs using the provided overlap matrix, 
+This function clusters robust programs using the provided overlap matrix 
 and filters the clusters based on their size (number of robust programs).
 }
 \examples{

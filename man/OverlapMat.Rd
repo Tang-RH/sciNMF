@@ -19,7 +19,7 @@ OverlapMat(ls1, ls2 = ls1, Dice = FALSE, Jaccard = FALSE)
 A matrix representing the overlap between gene sets in the input lists.
 }
 \description{
-The \code{OverlapMat} function calculates the overlap between two lists of gene sets and creates an overlap matrix.
+The function calculates the overlap between two lists of gene sets and creates an overlap matrix.
 }
 \details{
 The \code{OverlapMat} function takes two lists of gene sets and creates a matrix with rows representing elements from \code{ls1} and columns representing gene sets from \code{ls2}.
