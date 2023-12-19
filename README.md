@@ -13,13 +13,14 @@ There are 3 main steps to identify cell states from scRNA-seq data:
 
 
 ## **Installation**
-To install the sciNMF package, you can use the following commands:  
-`# Install devtools if not already installed
-if (!requireNamespace("devtools", quietly = TRUE)){
-  install.packages("devtools")
-}
-devtools::install_github('Tang-RH/sciNMF')`
-
+To install the sciNMF package, you can use the following commands: 
+```
+# Install devtools if not already installed 
+if(!requireNamespace("devtools", quietly = TRUE)){
+    install.packages("devtools") 
+} 
+devtools::install_github('Tang-RH/sciNMF')
+```
 
 ## **Tutorial**
 For detailed instructions and examples, please refer to our comprehensive tutorial.[https://github.com/Tang-RH/sciNMF/tree/master/Tutorial](https://github.com/Tang-RH/sciNMF/tree/master/Tutorial)
