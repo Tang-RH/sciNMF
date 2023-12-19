@@ -21,10 +21,10 @@ ClusterPG(
 \item{min.cluster.size}{Minimum size of a cluster to be retained default is 0.}
 
 \item{method.clustering}{Method for hierarchical clustering. 
-Options include "ward.D2" (default), "single", "complete", etc.}
+Options include "ward.D2" (default), "single", "complete" and other methods supported by \code{\link[stats]{hclust}}}
 
 \item{distance.clustering}{Method for calculating distances between clusters. 
-Options include "Intersection" (default), "Jaccard", "correlation", and any other valid method for 'dist'.}
+Options include "Intersection" (default), "Jaccard", "correlation", and any other valid method for \code{\link[stats]{dist}}.}
 
 \item{max.intersect}{Maximum intersection value (used when distance.clustering = "Intersection").}
 }
@@ -49,5 +49,5 @@ print(clusters)
 
 }
 \seealso{
-\code{\link{hclust}}, \code{\link{cutree}}, \code{\link{dist}}
+\code{\link[stats]{hclust}}, \code{\link[stats]{cutree}}, \code{\link[stats]{dist}}
 }

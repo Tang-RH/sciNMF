@@ -22,16 +22,16 @@
 #' \item\code{sample_n}
 #' }
 #'
-#' @param IQR.cut The cutoff value for IQR. Programs with IQR above this value will be kept in the plot.
-#' @param median.cut The cutoff value for median. Programs with median above this value will be kept in the plot.
+#' @param IQR.cut The threshold for IQR. Programs with IQR above this value will be kept in the plot, default is 0.1.
+#' @param median.cut The threshold for median. Programs with median above this value will be kept in the plot, default is 0.02.
 #' @param grid A logical value indicating whether to arrange the plots of samples in a grid (TRUE) or return a list of ggplot objects (FALSE).
 #' @param ncol Determines the number of columns when arranging the plots in a grid. If NULL, it will be automatically determined based on the number of samples.
 #' @param align (Optional) Specifies whether graphs in the grid should be horizontally ("h") or vertically ("v") aligned. Options are "none" (default), "hv" (align in both directions), "h", and "v".
 #' @details
-#' First, all the program usages for each cell will be normalized to 1. Then the IQR and median usage of each program will be calculated for quality control.
+#' First, all the program usages in the same NMF rank for each cell will be normalized to 1. Then the IQR and median usage of each program will be calculated for quality control.
 #' The programs with IQR and median usage below the cutoff will be labeled as 'Remove'
 #' 
-#' @return A girded ggplot object or a list of ggplot objects containing boxplot for each program with IQR and median filtering.
+#' @return A girded ggplot object or a list of ggplot objects containing boxplots for each program with IQR and median filtering.
 #'
 #' @import ggplot2
 #' @importFrom tidyr gather

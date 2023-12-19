@@ -7,9 +7,9 @@
 #' @param cut.num Number of clusters to be created.
 #' @param min.cluster.size Minimum size of a cluster to be retained default is 0.
 #' @param method.clustering Method for hierarchical clustering. 
-#'   Options include "ward.D2" (default), "single", "complete", etc.
+#'   Options include "ward.D2" (default), "single", "complete" and other methods supported by \code{\link[stats]{hclust}}
 #' @param distance.clustering Method for calculating distances between clusters. 
-#'   Options include "Intersection" (default), "Jaccard", "correlation", and any other valid method for 'dist'.
+#'   Options include "Intersection" (default), "Jaccard", "correlation", and any other valid method for \code{\link[stats]{dist}}.
 #' @param max.intersect Maximum intersection value (used when distance.clustering = "Intersection").
 #'
 #' @return A vector indicating the cluster assignment for each program.
@@ -27,7 +27,7 @@
 #' print(clusters)
 #'
 #' @seealso
-#' \code{\link{hclust}}, \code{\link{cutree}}, \code{\link{dist}}
+#' \code{\link[stats]{hclust}}, \code{\link[stats]{cutree}}, \code{\link[stats]{dist}}
 #'
 #' @import stats
 #'

@@ -6,7 +6,7 @@
 #' @param gene.set User input annotation of TERM TO GENE mapping, a data.frame of 2 column with term and gene. All built-in data.frame object
 #' are \code{"GO_BP", "GO_CC", "GO_MM", "Hallmark", "CellMarker"}. You can set a character vector for using the built-in gene sets. Default is "GO_BP"
 #' @param universe background genes. If missing, the all genes listed in the database (eg gene.set data.frame) will be used as background.
-#' @param only.df Logical, if TRUE, the function will return only the data frame for each enrichment results.
+#' @param only.df Logical, if TRUE, the function will return only the data.frame for each enrichment results.
 #' If FALSE, the full enrichment result object will be returned. Default is TRUE.
 #' @param minGSSize The minimum number of genes required for a gene set to be considered in the analysis.
 #' Default is 10.

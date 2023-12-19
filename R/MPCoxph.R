@@ -9,7 +9,7 @@
 #' @param event The column name in the \code{cli} data.frame that represents the event status (event occurrence).
 #' This column should contain binary values (0 or 1), where 0 indicates that the event has not occurred (alive) and 1 indicates that the event has occurred (dead).
 #' @param group.by A character vector specifying the column names in the \code{cli} data.frame by which the samples will be split for subgroup analysis. If NULL, all samples will be treated as one group.
-#' @param min.sample The minimum number of samples required in each subgroup for Cox regression analysis.
+#' @param min.sample The minimum number of samples required in each subgroup for Cox regression analysis. Default is 15.
 #' @param return.df A logical value indicating whether to return the result as a data frame (TRUE) or as a ggplot object (FALSE).
 #' @param xlab The label for the x-axis of the plot. Default is "Program".
 #' @param ylab The label for the y-axis of the plot. Default is "Group".

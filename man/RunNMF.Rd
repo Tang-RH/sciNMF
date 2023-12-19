@@ -28,48 +28,48 @@ RunNMF(
 )
 }
 \arguments{
-\item{object}{a Seurat object}
+\item{object}{a Seurat object.}
 
-\item{group.by}{name of the column used for grouping cells}
+\item{group.by}{name of the column in metadata used for grouping cells.}
 
-\item{dir.output}{directory to save the output files, default is NULL. If provided, the result of each individual will be saved as .rds files}
+\item{dir.output}{directory to save the output files, default is NULL. If provided, the NMF result of each individual will be saved as .rds files.}
 
-\item{k.range}{range of values for the number of modules (k) in NMF, default is 3:8}
+\item{k.range}{range of values for the number of modules (k) in NMF, default is 3:8.}
 
-\item{samples}{samples to analyze, default is NULL and all the samples in group.by column will be analyzed}
+\item{samples}{samples to analyze, default is NULL and all the samples in group.by column will be analyzed.}
 
-\item{project}{prefix for transcriptional programs and the output files, default is 'NMF'}
+\item{project}{prefix for transcriptional programs and the output files, default is 'NMF'.}
 
-\item{normalization.method}{normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'}
+\item{normalization.method}{normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'.}
 
-\item{min.cell}{minimum number of cells required for analysis in an individual, default is 10}
+\item{min.cell}{minimum number of cells required for analysis in an individual, default is 10.}
 
-\item{variable.features.n}{number of high variable features to select for each individual}
+\item{variable.features.n}{number of high variable features to select for each individual.}
 
-\item{do.scale}{logical indicating whether to scale the data, default is FALSE}
+\item{do.scale}{logical, indicating whether to scale the data, default is FALSE.}
 
-\item{do.center}{logical indicating whether to center the data, default is TRUE}
+\item{do.center}{logical, indicating whether to center the data, default is TRUE.}
 
-\item{ncore}{number of cores for parallel computation}
+\item{ncore}{number of cores for parallel computation.}
 
-\item{seed}{random seed for reproducibility}
+\item{seed}{random seed for reproducibility.}
 
-\item{rm.MT}{logical indicating whether to remove mitochondrial genes}
+\item{rm.MT}{logical, indicating whether to remove mitochondrial genes.}
 
-\item{rm.RP.S.L}{logical indicating whether to remove ribosomal protein genes}
+\item{rm.RP.S.L}{logical, indicating whether to remove ribosomal protein genes.}
 
-\item{rm.HSP}{logical indicating whether to remove heat shock protein genes}
+\item{rm.HSP}{logical, indicating whether to remove heat shock protein genes.}
 
-\item{loss}{loss function for \code{NNLM::\link[NNLM]{nnmf}}, either mean square error (mse) or mean KL-divergence (mkl), default is 'mse'}
+\item{loss}{loss function for \code{NNLM::\link[NNLM]{nnmf}}, either mean square error (mse) or mean KL-divergence (mkl), default is 'mse'.}
 
-\item{max.iter}{maximum number of iterations for \code{NNLM::\link[NNLM]{nnmf}}, default is 5000}
+\item{max.iter}{maximum number of iterations for \code{NNLM::\link[NNLM]{nnmf}}, default is 5000.}
 
-\item{method}{method for \code{NNLM::\link[NNLM]{nnmf}} computation, default is 'scd'}
+\item{method}{method for \code{NNLM::\link[NNLM]{nnmf}} computation, default is 'scd'.}
 
-\item{...}{Additional arguments for \code{NNLM::\link[NNLM]{nnmf}}}
+\item{...}{Additional arguments for \code{NNLM::\link[NNLM]{nnmf}}.}
 }
 \value{
-A list of matrices containing the NMF results named by groups in group.by column; for each individual, H and W matrices will be return
+A list of matrices containing the NMF results named by individuals in group.by column; for each individual, H and W matrices will be return
 }
 \description{
 This function performs non-negative matrix factorization (NMF) analysis
@@ -89,5 +89,5 @@ NNLM: \url{https://github.com/linxihui/NNLM/}
 \seealso{
 \code{NNLM::\link[NNLM]{nnmf}}
 
-For more information, please see \url{https://github.com/Tang-RH/sciNMF}
+For more information, please refer to \url{https://github.com/Tang-RH/sciNMF}
 }

@@ -8,7 +8,8 @@
 #' @param Jaccard A logical value indicating whether to calculate Jaccard similarity. Default is FALSE.
 #'
 #' @details
-#' The \code{OverlapMat} function takes two lists of gene sets and creates a matrix with rows representing elements from \code{ls1} and columns representing gene sets from \code{ls2}. The function calculates the size of the intersection between each pair of gene sets from \code{ls1} and \code{ls2}. If \code{Jaccard} is \code{TRUE}, it also calculates the Jaccard similarity by dividing the size of the intersection by the size of the union of the two sets.
+#' The \code{OverlapMat} function takes two lists of gene sets and creates a matrix with rows representing elements from \code{ls1} and columns representing gene sets from \code{ls2}.
+#'  The function calculates the size of the intersection between each pair of gene sets from \code{ls1} and \code{ls2}. If \code{Dice} or \code{Jaccard} is \code{TRUE}, it also calculates the Dice/Jaccard similarity of paired gene sets.
 #'
 #' @return A matrix representing the overlap between gene sets in the input lists.
 #'

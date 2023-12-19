@@ -31,9 +31,9 @@ IQRPlot(
 \item\code{sample_n}
 }}
 
-\item{IQR.cut}{The cutoff value for IQR. Programs with IQR above this value will be kept in the plot.}
+\item{IQR.cut}{The threshold for IQR. Programs with IQR above this value will be kept in the plot, default is 0.1.}
 
-\item{median.cut}{The cutoff value for median. Programs with median above this value will be kept in the plot.}
+\item{median.cut}{The threshold for median. Programs with median above this value will be kept in the plot, default is 0.02.}
 
 \item{grid}{A logical value indicating whether to arrange the plots of samples in a grid (TRUE) or return a list of ggplot objects (FALSE).}
 
@@ -42,7 +42,7 @@ IQRPlot(
 \item{align}{(Optional) Specifies whether graphs in the grid should be horizontally ("h") or vertically ("v") aligned. Options are "none" (default), "hv" (align in both directions), "h", and "v".}
 }
 \value{
-A girded ggplot object or a list of ggplot objects containing boxplot for each program with IQR and median filtering.
+A girded ggplot object or a list of ggplot objects containing boxplots for each program with IQR and median filtering.
 }
 \description{
 The IQRPlot function is used to generate boxplots for each program based on the IQR (Interquartile Range) and median filter. 
@@ -50,7 +50,7 @@ The IQR and median usage of each program is calculated from normalized H matrice
 The higher IQR indicates a larger range of usage, which is useful for quality control.
 }
 \details{
-First, all the program usages for each cell will be normalized to 1. Then the IQR and median usage of each program will be calculated for quality control.
+First, all the program usages in the same NMF rank for each cell will be normalized to 1. Then the IQR and median usage of each program will be calculated for quality control.
 The programs with IQR and median usage below the cutoff will be labeled as 'Remove'
 }
 \examples{

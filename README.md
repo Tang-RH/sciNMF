@@ -1,15 +1,28 @@
-# sciNMF
+# **sciNMF: Single-Cell Individual Non-Negative Matrix Factorization**
 
-sciNMF (Single-Cell Individual Non-Negative Matrix Factorization) is an R package designed for exploring the heterogeneity of cellular transcriptional states across individuals using single-cell RNA-seq data.  
-The package is developed by HuangLab at Schoolof Life Sciences, XiamenUniversity, Xiamen, Fujian, China.  
+sciNMF is an R package designed for exploring the heterogeneity of cellular transcriptional states across individuals using single-cell RNA-seq data. This package is developed by HuangLab at the School of Life Sciences, Xiamen University, Xiamen, Fujian, China.
 
-There are 3 main steps to identify cell states:  
+## **Overview**
+There are 3 main steps to identify cell states from scRNA-seq data:  
 
-**Step1**  Performs multiple ranks NMF on single-cell gene expression matrix for each individual.  
+**Step 1:** Perform multiple ranks Non-Negative Matrix Factorization (NMF) on single-cell gene expression matrices for each individual.
 
-**Step2** Filter out low-quality programs by considering their Interquartile Range (IQR) and median usages. Subsequently, identify robust programs based on their intra- and intersample reproducibility.
+**Step 2:** Filter out low-quality programs by considering their Interquartile Range (IQR) and median usages. Identify robust programs based on their intra- and inter-sample reproducibility.
 
-**Step3** Cluster the robust programs based on their overlapping gene numbers. Subsequently, generate meta-programs from the clustering results, utilizing the top genes with the highest average weight to represent these meta-programs.
+**Step 3:** Cluster the robust programs based on their overlapping gene numbers. Generate meta-programs from the clustering results, utilizing the top genes with the highest average weight to represent these meta-programs.
 
-The tutorial can be found at:
-    [https://github.com/Tang-RH/sciNMF/tree/master/Tutorial](https://github.com/Tang-RH/sciNMF/tree/master/Tutorial)  
+
+## **Installation**
+To install the sciNMF package, you can use the following commands:  
+`# Install devtools if not already installed
+if (!requireNamespace("devtools", quietly = TRUE)){
+  install.packages("devtools")
+}
+devtools::install_github('Tang-RH/sciNMF')`
+
+
+## **Tutorial**
+For detailed instructions and examples, please refer to our comprehensive tutorial.[https://github.com/Tang-RH/sciNMF/tree/master/Tutorial](https://github.com/Tang-RH/sciNMF/tree/master/Tutorial)
+
+## **Citation**
+If you find sciNMF useful for your research, please consider citing our publication.

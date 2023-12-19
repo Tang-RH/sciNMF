@@ -24,7 +24,7 @@ are \code{"GO_BP", "GO_CC", "GO_MM", "Hallmark", "CellMarker"}. You can set a ch
 
 \item{universe}{background genes. If missing, the all genes listed in the database (eg gene.set data.frame) will be used as background.}
 
-\item{only.df}{Logical, if TRUE, the function will return only the data frame for each enrichment results.
+\item{only.df}{Logical, if TRUE, the function will return only the data.frame for each enrichment results.
 If FALSE, the full enrichment result object will be returned. Default is TRUE.}
 
 \item{minGSSize}{The minimum number of genes required for a gene set to be considered in the analysis.

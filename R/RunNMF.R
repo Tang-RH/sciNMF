@@ -3,28 +3,28 @@
 #' This function performs non-negative matrix factorization (NMF) analysis
 #' on single-cell gene expression matrix for each individual.
 #'
-#' @param object a Seurat object
-#' @param group.by name of the column used for grouping cells
-#' @param dir.output directory to save the output files, default is NULL. If provided, the result of each individual will be saved as .rds files
-#' @param k.range range of values for the number of modules (k) in NMF, default is 3:8
-#' @param samples samples to analyze, default is NULL and all the samples in group.by column will be analyzed
-#' @param project prefix for transcriptional programs and the output files, default is 'NMF'
-#' @param normalization.method normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'
-#' @param min.cell minimum number of cells required for analysis in an individual, default is 10
-#' @param variable.features.n number of high variable features to select for each individual
-#' @param do.scale logical indicating whether to scale the data, default is FALSE
-#' @param do.center logical indicating whether to center the data, default is TRUE
-#' @param ncore number of cores for parallel computation
-#' @param seed random seed for reproducibility
-#' @param rm.MT logical indicating whether to remove mitochondrial genes
-#' @param rm.RP.S.L logical indicating whether to remove ribosomal protein genes
-#' @param rm.HSP logical indicating whether to remove heat shock protein genes
-#' @param loss loss function for \code{NNLM::\link[NNLM]{nnmf}}, either mean square error (mse) or mean KL-divergence (mkl), default is 'mse'
-#' @param max.iter maximum number of iterations for \code{NNLM::\link[NNLM]{nnmf}}, default is 5000
-#' @param method method for \code{NNLM::\link[NNLM]{nnmf}} computation, default is 'scd'
-#' @param ... Additional arguments for \code{NNLM::\link[NNLM]{nnmf}}
+#' @param object a Seurat object.
+#' @param group.by name of the column in metadata used for grouping cells.
+#' @param dir.output directory to save the output files, default is NULL. If provided, the NMF result of each individual will be saved as .rds files.
+#' @param k.range range of values for the number of modules (k) in NMF, default is 3:8.
+#' @param samples samples to analyze, default is NULL and all the samples in group.by column will be analyzed.
+#' @param project prefix for transcriptional programs and the output files, default is 'NMF'.
+#' @param normalization.method normalization method for the data, one of 'SCT' or 'LogNormalize', default is 'SCT'.
+#' @param min.cell minimum number of cells required for analysis in an individual, default is 10.
+#' @param variable.features.n number of high variable features to select for each individual.
+#' @param do.scale logical, indicating whether to scale the data, default is FALSE.
+#' @param do.center logical, indicating whether to center the data, default is TRUE.
+#' @param ncore number of cores for parallel computation.
+#' @param seed random seed for reproducibility.
+#' @param rm.MT logical, indicating whether to remove mitochondrial genes.
+#' @param rm.RP.S.L logical, indicating whether to remove ribosomal protein genes.
+#' @param rm.HSP logical, indicating whether to remove heat shock protein genes.
+#' @param loss loss function for \code{NNLM::\link[NNLM]{nnmf}}, either mean square error (mse) or mean KL-divergence (mkl), default is 'mse'.
+#' @param max.iter maximum number of iterations for \code{NNLM::\link[NNLM]{nnmf}}, default is 5000.
+#' @param method method for \code{NNLM::\link[NNLM]{nnmf}} computation, default is 'scd'.
+#' @param ... Additional arguments for \code{NNLM::\link[NNLM]{nnmf}}.
 #'
-#' @return A list of matrices containing the NMF results named by groups in group.by column; for each individual, H and W matrices will be return
+#' @return A list of matrices containing the NMF results named by individuals in group.by column; for each individual, H and W matrices will be return
 #'
 #' @export
 #'
@@ -35,7 +35,7 @@
 #'
 #' @seealso \code{NNLM::\link[NNLM]{nnmf}}
 #'
-#' @seealso For more information, please see \url{https://github.com/Tang-RH/sciNMF}
+#' @seealso For more information, please refer to \url{https://github.com/Tang-RH/sciNMF}
 #' @importFrom Matrix rowSums
 #' @importFrom Seurat CreateSeuratObject SCTransform GetAssayData NormalizeData FindVariableFeatures ScaleData VariableFeatures
 #' @importFrom foreach foreach '%dopar%'

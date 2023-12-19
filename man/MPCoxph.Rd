@@ -36,7 +36,7 @@ This column should contain binary values (0 or 1), where 0 indicates that the ev
 
 \item{group.by}{A character vector specifying the column names in the \code{cli} data.frame by which the samples will be split for subgroup analysis. If NULL, all samples will be treated as one group.}
 
-\item{min.sample}{The minimum number of samples required in each subgroup for Cox regression analysis.}
+\item{min.sample}{The minimum number of samples required in each subgroup for Cox regression analysis. Default is 15.}
 
 \item{return.df}{A logical value indicating whether to return the result as a data frame (TRUE) or as a ggplot object (FALSE).}
 

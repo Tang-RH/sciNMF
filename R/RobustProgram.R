@@ -1,6 +1,6 @@
-#' Identify Robust Programs using the Nature 2023 Method
+#' Identify Robust Programs using modified Nature 2023 Method
 #'
-#' This function identifies robust gene programs using the method proposed in the Nature 2023 paper.
+#' This function identifies robust gene programs using a modified method proposed in the Nature 2023 paper.
 #' The method aims to remove redundant programs that are highly similar within the same patient.
 #'
 #' @param WH.list
@@ -21,11 +21,9 @@
 #' \item\code{sample_n}
 #' }
 #'
-#' @param top The number of top genes to extract for each robust program. Default is 50
-#' @param IQR.cut The cutoff value for the interquartile range (IQR) of gene useage to filter programs during QC
-#' Default is 0.1
-#' @param median.cut The cutoff value for the median gene useage to filter programs during QC
-#' Default is 0
+#' @param top The number of top genes to extract for each robust program. Default is 50.
+#' @param IQR.cut The threshold for the interquartile range (IQR) of gene usage to filter programs during QC. Default is 0.1.
+#' @param median.cut The threshold for the median gene usage to filter programs during QC. Default is 0.02.
 #' @param intra.min The threshold to identify similar programs within an individual
 #' Number of overlap genes greater than or equal to \code{intra.min} are considered similar within the same individual
 #' Default is 35
@@ -45,14 +43,14 @@
 #' Each element of the list represents a program and contains \code{top} genes with gene names.
 #'
 #' @details
-#' The function first performs QC on the programs based on the interquartile range (IQR) and median usage (the intra-rank-normalized H matrix)
+#' The function performs Quality Control (QC) on the programs based on the Interquartile Range (IQR) and median usage (the intra-rank-normalized H matrix).
 #' Programs with low IQR and median usage are filtered out.
 #'
-#' Then, it removes programs that have less than \code{intra.rep} similar programs(number of overlap genes between two programs >= \code{intra.min}) in the same individual (for selecting robust programs).
+#' Following QC, it removes programs that have fewer than \code{intra.rep} similar programs (number of overlapping genes between two programs >= \code{intra.min}) within the same individual (for selecting robust programs).
 #'
-#' Next, it filters out programs which have less than \code{inter.rep} similar programs (number of overlap genes between two programs >= \code{inter.min}) across individuals.
+#' Subsequently, it filters out programs which have fewer than \code{inter.rep} similar programs (number of overlapping genes between two programs >= \code{inter.min}) across individuals.
 #'
-#' Finally, it further filters out redundant programs, only selects programs that have a intersection smaller than \code{intra.max} with a previously selected programs in an individual.
+#' Finally, it further filters out redundant programs, selecting only programs that have an intersection smaller than \code{intra.max} with previously selected programs within an individual.
 #'
 #' The remaining programs are considered robust and are returned as the final result.
 #'
