@@ -78,12 +78,12 @@ and each element is a named color vector.}
 A list containing MetaProgram information and, if specified, a heatmap.
 }
 \description{
-This function generates MetaPrograms and the heatmap of cluster result (optional).
+This function generates meta programs and the heatmap of cluster result (optional).
 }
 \details{
 The function including 3 steps:  
 
-Step1: Generate the MetaProgram from cluster result. For each MP, the coefficient of genes are calculated 
+Step1: Generate the meta program (MP) from cluster result. For each MP, the coefficient of genes are calculated 
 from average weight (W matrix of NMF result) of all the programs assigned to this MP, and the top genes will 
 be selected as the MP signature. 
  
