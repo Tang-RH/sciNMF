@@ -1,4 +1,4 @@
-#' Identify Robust Programs using modified Nature 2023 Method
+#' Robust Programs Identification
 #'
 #' This function identifies robust gene programs using a modified method proposed in the Nature 2023 paper.
 #' The method aims to remove redundant programs that are highly similar within the same patient.

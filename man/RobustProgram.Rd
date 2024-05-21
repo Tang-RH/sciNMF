@@ -2,7 +2,7 @@
 % Please edit documentation in R/RobustProgram.R
 \name{RobustProgram}
 \alias{RobustProgram}
-\title{Identify Robust Programs using modified Nature 2023 Method}
+\title{Robust Programs Identification}
 \usage{
 RobustProgram(
   WH.list,

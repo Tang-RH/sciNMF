@@ -54,6 +54,9 @@ RunNMF = function(object, group.by, dir.output = NULL, k.range = 3:8, samples = 
                   ncore = 1, seed = 123,
                   rm.MT = TRUE, rm.RP.S.L = TRUE, rm.HSP = TRUE,
                   loss = "mse", max.iter = 5000, method  = "scd", ...){
+    
+    # check the version of SeuratObject
+    flag_v = packageVersion('SeuratObject') >= '5'
 
     if(any(is.na(object@meta.data[, group.by]))){
         warning("The ", group.by, " column contains NA and those cells are removed!")
@@ -64,17 +67,27 @@ RunNMF = function(object, group.by, dir.output = NULL, k.range = 3:8, samples = 
     if(is.null(samples)){
         samples = unique(object@meta.data[,group.by])
     }
-
-    genes = rownames(object@assays$RNA@counts)
+    
+    if(flag_v){
+        genes = rownames(Seurat::GetAssayData(object, assay = 'RNA', layer = 'counts'))
+    }else{
+        genes = rownames(Seurat::GetAssayData(object, assay = 'RNA', slot = 'counts'))
+    }
+    
     #remove MT, RP, HSP genes
     if(rm.MT){genes = grep("^MT-",genes, invert = TRUE, value = TRUE)}
     if(rm.RP.S.L){genes = grep("^RP[SL]", genes, invert = TRUE, value = TRUE)}
     if(rm.HSP){genes = grep("^HSP", genes, invert = TRUE, value = TRUE)}
 
 
-    clean_counts = object@assays$RNA@counts[genes,]
+    if(flag_v){
+        clean_counts = Seurat::GetAssayData(object, assay = 'RNA', layer = 'counts')[genes,]
+    }else{
+        clean_counts = Seurat::GetAssayData(object, assay = 'RNA', slot = 'counts')[genes,]
+    }
     
-    registerDoParallel(cores = ncore)
+    
+    doParallel::registerDoParallel(cores = ncore)
 
     ls_res = foreach(sam = samples ) %dopar% {
 
@@ -94,14 +107,25 @@ RunNMF = function(object, group.by, dir.output = NULL, k.range = 3:8, samples = 
         #I don't know why warning for Seurat::SCTransform()
         srt = SCTransform(srt,verbose = FALSE, do.scale = do.scale,
                                   do.center = do.center, variable.features.n = variable.features.n)
-        data = Seurat::GetAssayData(srt, assay = 'SCT', slot = 'scale.data')
+        if(flag_v){
+            data = Seurat::GetAssayData(srt, assay = 'SCT', layer = 'scale.data')
+        }else{
+            data = Seurat::GetAssayData(srt, assay = 'SCT', slot = 'scale.data')
+        }
+        
 
     }else if(normalization.method == "LogNormalize"){
         srt = Seurat::NormalizeData(srt, normalization.method = "LogNormalize", scale.factor = 10000)
         srt = Seurat::FindVariableFeatures(srt, selection.method = "vst", nfeatures = variable.features.n)
         srt = Seurat::ScaleData(srt, features = VariableFeatures(srt),
                               do.scale = do.scale, do.center = do.center)
-        data = Seurat::GetAssayData(srt, assay = "RNA", slot = "scale.data")
+        
+        if(flag_v){
+            data = Seurat::GetAssayData(srt, assay = 'SCT', layer = 'scale.data')
+        }else{
+            data = Seurat::GetAssayData(srt, assay = 'SCT', slot = 'scale.data')
+        }
+        
 
     }else{
         stop('Invalid normalization.method, must be one of SCT, LogNormalize')

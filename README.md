@@ -1,8 +1,9 @@
-# **sciNMF: Single-Cell Individual Non-Negative Matrix Factorization**
+# **sciNMF: Single-Cell Integration by  Non-Negative Matrix Factorization**
 
 sciNMF is an R package designed for exploring the heterogeneity of cellular transcriptional states across individuals using single-cell RNA-seq data. This package is developed by HuangLab at the School of Life Sciences, Xiamen University, Xiamen, Fujian, China.
 
 ## **Overview**
+![alt text](overview.png)
 There are 3 main steps to identify cell states from scRNA-seq data:  
 
 **Step 1:** Perform multiple ranks Non-Negative Matrix Factorization (NMF) on single-cell gene expression matrices for each individual.
