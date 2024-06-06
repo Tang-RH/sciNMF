@@ -1,4 +1,4 @@
-#' Single-Cell NMF analysis on Individuals(sciNMF)
+#' Single-Cell Integration by Non-Negative Matrix Factorization(sciNMF)
 #'
 #' This function performs non-negative matrix factorization (NMF) analysis
 #' on single-cell gene expression matrix for each individual.

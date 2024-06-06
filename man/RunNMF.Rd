@@ -2,7 +2,7 @@
 % Please edit documentation in R/RunNMF.R
 \name{RunNMF}
 \alias{RunNMF}
-\title{Single-Cell NMF analysis on Individuals(sciNMF)}
+\title{Single-Cell Integration by Non-Negative Matrix Factorization(sciNMF)}
 \usage{
 RunNMF(
   object,

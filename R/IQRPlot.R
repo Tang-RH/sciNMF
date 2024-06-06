@@ -74,6 +74,7 @@ IQRPlot = function(WH.list, IQR.cut = 0.1, median.cut = 0.02, grid = TRUE, ncol 
           geom_jitter(aes(color = Keep), alpha=0.4,width = 0.2, size = 0) +
           theme(axis.text.x = element_text(angle = 90,hjust = 1,vjust = 0.5)) +
           guides(color = guide_legend(override.aes = list(size = 3, alpha = 1))) +
+          ylab('Normalized Usage') +
           ggtitle(paste0(sam, '_k',min(as.numeric(df_pl$K)) ,'to', max(as.numeric(df_pl$K)))) +
           facet_grid(~K,drop = TRUE,scales = "free",space = 'free') +
           theme(plot.title = element_text(hjust = 0.5)) + 
