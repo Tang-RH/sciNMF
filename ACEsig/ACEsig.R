@@ -1,6 +1,7 @@
-# the input is expression matrix, whose rows represent genes and columns represent patients
+# This function is used to calculate the ACE score and classify the patients into high and low risk groups based on the median of the ACE score
+# The input is expression matrix, whose rows represent genes and columns represent patients
 # return value is a dataframe object, frist column is 'ACEScore' cacluated by the ACE model, the second column is 'Risk' classification 
-ACESig = function(mat){
+ACEsig = function(mat){
     model = c('CALCRL'=0.516705634819962,
               'CST3'=-0.135377434640815,
               'DDIT4'=0.147011776933904,

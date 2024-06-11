@@ -14,7 +14,7 @@ Remotes: github::linxihui/NNLM
 Additional_repositories: https://bioconductor.org/packages/release/bioc/
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Depends: R (>= 3.6)
 Author: Ronghan Tang [aut, cre],
   Zheyang Zhang [aut]
