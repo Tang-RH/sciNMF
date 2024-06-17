@@ -45,7 +45,7 @@ IQRPlot(
 A girded ggplot object or a list of ggplot objects containing boxplots for each program with IQR and median filtering.
 }
 \description{
-The IQRPlot function is used to generate boxplots for each program based on the Interquartile Range (IQR) and median filter. 
+The IQRPlot function is used to generate boxplots for each program based on the Interquartile Range (IQR) and median filter.
 The IQR and median usage of each program is calculated from normalized H matrices, part of the the Non-Negative Matrix Factorization (NMF) results.
 }
 \details{
@@ -54,7 +54,7 @@ The programs with IQR and median usage below the cutoff will be labeled as 'Remo
 }
 \examples{
 \dontrun{
-    result <- IQRPlot(WH.list, IQR.cut = 0.1, median.cut = 0.02, grid = TRUE)
+result <- IQRPlot(WH.list, IQR.cut = 0.1, median.cut = 0.02, grid = TRUE)
 }
 
 }

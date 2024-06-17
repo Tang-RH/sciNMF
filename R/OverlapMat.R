@@ -16,8 +16,8 @@
 #' @examples
 #' # Example lists
 #' set.seed(123)
-#' ls_pg <- lapply(1:50, function(i){
-#'   paste0('g',sample(1:100,20))
+#' ls_pg <- lapply(1:50, function(i) {
+#'   paste0("g", sample(1:100, 20))
 #' })
 #'
 #' # Calculate the overlap matrix
@@ -28,21 +28,23 @@
 #'
 #' @export
 #'
-OverlapMat = function(ls1, ls2 = ls1, Dice = FALSE, Jaccard = FALSE ){
-    if(Dice & Jaccard){warning('Both Dice and Jaccard are TRUE, return Dice')}
-    mat = sapply(ls2, function(m2) {
-        sapply(ls1, function(m1) {
-            inset = intersect(m1, m2)
-            if(Dice){
-                res = length(inset)*2/length(c(m1,m2))
-            }else if(Jaccard){
-                uniset = union(m1, m2)
-                res = length(inset)/length(uniset)
-            }else{
-                res = length(inset)
-            }
-            return(res)
-        })
+OverlapMat <- function(ls1, ls2 = ls1, Dice = FALSE, Jaccard = FALSE) {
+  if (Dice & Jaccard) {
+    warning("Both Dice and Jaccard are TRUE, return Dice")
+  }
+  mat <- sapply(ls2, function(m2) {
+    sapply(ls1, function(m1) {
+      inset <- intersect(m1, m2)
+      if (Dice) {
+        res <- length(inset) * 2 / length(c(m1, m2))
+      } else if (Jaccard) {
+        uniset <- union(m1, m2)
+        res <- length(inset) / length(uniset)
+      } else {
+        res <- length(inset)
+      }
+      return(res)
     })
-    return(mat)
+  })
+  return(mat)
 }

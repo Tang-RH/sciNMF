@@ -4,6 +4,7 @@ sciNMF is an R package designed for exploring the heterogeneity of cellular tran
 
 ## **Overview**
 ![alt text](overview.png)
+We have modified the method from [Gavish A, et al. (Nature, 2023)](https://doi.org/10.1038/s41586-023-06130-4) to identify cellular transcriptional states using NMF on scRNA-seq data.  
 There are 3 main steps to identify cell states from scRNA-seq data:  
 
 **Step 1:** Perform multiple ranks Non-Negative Matrix Factorization (NMF) on single-cell gene expression matrices for each individual.
@@ -12,9 +13,17 @@ There are 3 main steps to identify cell states from scRNA-seq data:
 
 **Step 3:** Cluster the robust programs based on their overlapping gene numbers. Generate meta-programs from the clustering results, utilizing the top genes with the highest average weight to represent these meta-programs.
 
+## **Dependency packages installation with conda**
+We recommend installing the main dependency packages with conda first to avoid version conflicts and installation failures. Please run the following commands in the terminal:
+```
+conda create -n sciNMF r-base -y
+conda acivate sciNMF
+conda install r-seurat bioconductor-clusterprofiler bioconductor-gsva -y
+conda install bioconda::bioconductor-glmgampoi –y # for Seurat::SCTransform acceleration
+```
 
 ## **Installation**
-To install the sciNMF package, you can use the following commands: 
+To install the sciNMF package, you can run the following commands in R:
 ```
 # Install devtools if not already installed 
 if(!requireNamespace("devtools", quietly = TRUE)){
@@ -22,9 +31,30 @@ if(!requireNamespace("devtools", quietly = TRUE)){
 } 
 devtools::install_github('Tang-RH/sciNMF')
 ```
+Alternatively, you can download the release package and perform a local installation runing the following command in R:
+```
+devtools::install_local('the/path/to/package/sciNMF_0.1.2.tar.gz',repos = NULL, type = "source")
+```
+If there are too many version conflicts among dependent packages, causing the installation failure, we recommend manually installing the following three main dependent packages: `Seurat`, `clusterProfiler`, `GSVA`
+
+## **Test the package**
+To check if the package has beeb installed successfully, you can run the following commands in R:
+```
+library(sciNMF)
+data("SrtObj")
+ls_Demo_WH <- RunNMF(SrtObj, group.by = 'Sample')
+```
 
 ## **Tutorial**
-For detailed instructions and examples, please refer to our comprehensive tutorial.[https://github.com/Tang-RH/sciNMF/tree/master/Tutorial](https://github.com/Tang-RH/sciNMF/tree/master/Tutorial)
+For detailed instructions and examples, please refer to our comprehensive tutorial.[https://github.com/Tang-RH/sciNMF/tree/master/Tutorial](https://github.com/Tang-RH/sciNMF/tree/master/Tutorial)  
+You can directly download our GitHub repository and run the tutorial Jupyter notebook. Run the following commands in the terminal:
+```
+git clone https://github.com/Tang-RH/sciNMF.git
+cd sciNMF
+```
+
+## **Contact**
+Please feel free to open an issue if you encounter any problems while using our package.
 
 ## **Citation**
 If you find sciNMF useful for your research, please consider citing our publication.

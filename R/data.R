@@ -16,3 +16,19 @@
 #' @seealso \code{\link[gson]{read.gmt}} for gene.set data.frame generation.
 #' @source \url{https://maayanlab.cloud/Enrichr/#libraries}
 "ls_gs_sciNMF"
+
+
+
+#' A seurat object with 400 cells and 13,642 features
+#'
+#' This object is used to test the package installation. It contains 400 leukemic cells from 4 AML patients in our study.
+#'
+#' @format
+#' \describe{
+#'   \item{Seurat object}{
+#'     13642 features across 400 samples within 1 assay
+#'     Active assay: RNA (13642 features, 0 variable features)
+#'   }
+#' }
+#' @examples data("SrtObj")
+"SrtObj"

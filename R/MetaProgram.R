@@ -15,7 +15,7 @@
 #' @param color.mp The color used to label the Metaprograms.
 #' @param annotation Additional annotation to be added to the heatmap. It should be a data.frame, each row represents a robust program contained in cluster.result,
 #'  each column represents an annotation item.
-#' @param color.annotation A list object contain the annotation color, the name of each element should match the colnames of annotion data.frame 
+#' @param color.annotation A list object contain the annotation color, the name of each element should match the colnames of annotion data.frame
 #' and each element is a named color vector.
 #' @param cluster.name Name for the clustering annotation (for heatmap metaprogram annotation name, defalut is MetaProgram).
 #' @param name Name for the heatmap.
@@ -27,17 +27,17 @@
 #' @param ... Additional arguments to be passed to the \code{ComplexHeatmap::\link[ComplexHeatmap]{pheatmap}} function.
 #'
 #' @return A list containing MetaProgram information and, if specified, a heatmap.
-#' 
-#' @details 
-#' The function including 3 steps:  
-#' 
-#' Step1: Generate the meta program (MP) from cluster result. For each MP, the coefficient of genes are calculated 
-#' from average weight (W matrix of NMF result) of all the programs assigned to this MP, and the top genes will 
-#' be selected as the MP signature. 
-#'  
-#' Step2: Remove redundant genes across all MPs, assign the overlap genes by the min rank then max coef across MPs. 
-#' Then MPs contain no enough genes (\code{min.size.MP}) are removed. 
-#'  
+#'
+#' @details
+#' The function including 3 steps:
+#'
+#' Step1: Generate the meta program (MP) from cluster result. For each MP, the coefficient of genes are calculated
+#' from average weight (W matrix of NMF result) of all the programs assigned to this MP, and the top genes will
+#' be selected as the MP signature.
+#'
+#' Step2: Remove redundant genes across all MPs, assign the overlap genes by the min rank then max coef across MPs.
+#' Then MPs contain no enough genes (\code{min.size.MP}) are removed.
+#'
 #' Step3(optional): Draw the cluster heatmap of remaining MPs.
 #'
 #'
@@ -50,194 +50,204 @@
 #'
 #' @seealso \code{ComplexHeatmap::\link[ComplexHeatmap]{pheatmap}}, \code{\link{RunNMF}}, \code{\link{ClusterPG}}
 #'
-MetaProgram = function(WH.list, cluster.result, top = 50,
-                       min.size.MP = 30, key = "MP_", only.gene = TRUE, keep.rep.gene = TRUE,
-                       heatmap = TRUE, show.gap = TRUE, color.mp = NULL,
-                       border="grey", annotation = NULL, color.annotation = NULL,
-                       cluster.name = 'MetaProgram',name = 'Share Genes', 
-                       show.colnames = FALSE, show.rownames = TRUE,
-                       show.anno = TRUE, breaks = 0:25, 
-                       color = c('white',rev(as.character(paletteer::paletteer_c("viridis::magma", 32))[8:32])),...){
-    #step 1
-    #generate the metaprogram from cluster result
-    WH.list = WH.list[!sapply(WH.list, is.null)]
-    all_gene = lapply(WH.list, function(WH){
-        #those are hvg in an individual
-        rownames(WH$W)
-    }) %>% Reduce(f = union)
-    
-    all_pg = lapply(WH.list, function(WH){
-        colnames(WH$W)
-    }) %>% Reduce(f = union)
-    
-    if(!all(names(cluster.result) %in% all_pg)){
-        warning('Could not find program: ', paste(setdiff(names(cluster.result), all_pg), collapse = ' '), ' in the WH.list')
+MetaProgram <- function(WH.list, cluster.result, top = 50,
+                        min.size.MP = 30, key = "MP_", only.gene = TRUE, keep.rep.gene = TRUE,
+                        heatmap = TRUE, show.gap = TRUE, color.mp = NULL,
+                        border = "grey", annotation = NULL, color.annotation = NULL,
+                        cluster.name = "MetaProgram", name = "Share Genes",
+                        show.colnames = FALSE, show.rownames = TRUE,
+                        show.anno = TRUE, breaks = 0:25,
+                        color = c("white", rev(as.character(paletteer::paletteer_c("viridis::magma", 32))[8:32])), ...) {
+  # step 1
+  # generate the metaprogram from cluster result
+  WH.list <- WH.list[!sapply(WH.list, is.null)]
+  all_gene <- lapply(WH.list, function(WH) {
+    # those are hvg in an individual
+    rownames(WH$W)
+  }) %>% Reduce(f = union)
+
+  all_pg <- lapply(WH.list, function(WH) {
+    colnames(WH$W)
+  }) %>% Reduce(f = union)
+
+  if (!all(names(cluster.result) %in% all_pg)) {
+    warning("Could not find program: ", paste(setdiff(names(cluster.result), all_pg), collapse = " "), " in the WH.list")
+  }
+  # keep the cluster result contained program
+  all_pg <- intersect(all_pg, names(cluster.result))
+  # keep the cluster order
+  cluster.result <- cluster.result[names(cluster.result) %in% all_pg]
+
+  all_W <- lapply(WH.list, function(WH) {
+    neo_W <- matrix(0, ncol = ncol(WH$W), nrow = length(all_gene))
+    rownames(neo_W) <- all_gene
+    colnames(neo_W) <- colnames(WH$W)
+    neo_W[match(rownames(WH$W), all_gene), ] <- WH$W
+    neo_W <- neo_W[, intersect(all_pg, colnames(neo_W)), drop = FALSE]
+  }) %>% do.call(what = cbind)
+  # gene contain average coef
+  ls_mp_df <- split(names(cluster.result), cluster.result) %>% lapply(function(pgs) {
+    # some clusters may only have 1 pg
+    mat_pgs <- all_W[, pgs, drop = FALSE]
+    genes <- rowMeans(mat_pgs) %>%
+      sort(decreasing = TRUE) %>%
+      head(n = top)
+    df <- data.frame(Gene = names(genes), Coef = genes, Rank = 1:top)
+  })
+  # no need to change the MP names, the ClusterPG had give the pgs cluster number
+  names(ls_mp_df) <- paste0(key, names(ls_mp_df))
+  ###########################
+
+  # step 2
+  # remove redundant genes across all MPs
+  # assign the gene by the min rank then max coef
+  gene_MP_full <- sapply(ls_mp_df, "[", "Gene") %>%
+    unlist(use.names = FALSE) %>%
+    unique()
+
+  df_mp <- lapply(names(ls_mp_df), function(mp) {
+    df <- ls_mp_df[[mp]]
+    df$MP <- mp
+    return(df)
+  }) %>% do.call(what = rbind)
+
+  # calculate the min rank then bigger coef of each gene
+  df_rank_coef <- lapply(gene_MP_full, function(g) {
+    df_g <- subset(df_mp, Gene == g)
+    RankMin <- min(df_g$Rank)
+    CoefBigger <- max(subset(df_g, Rank == RankMin)$Coef)
+    data.frame(Gene = g, RankMin = RankMin, CoefBigger = CoefBigger)
+  }) %>% do.call(what = rbind)
+
+  # calculate the keeping flag for each row
+  df_mp$Idx_keep <- sapply(1:nrow(df_mp), function(row) {
+    row <- df_mp[row, ]
+    sub_rank_coef <- subset(df_rank_coef, Gene == row$Gene)
+    keep_1 <- row$Rank == sub_rank_coef$RankMin
+    keep_2 <- row$Coef == sub_rank_coef$CoefBigger
+    return(keep_1 & keep_2)
+  })
+
+
+  mp_keep_sum <- split(df_mp$Idx_keep, df_mp$MP) %>% sapply(sum)
+  mp_keep <- names(mp_keep_sum)[mp_keep_sum >= min.size.MP]
+  # remove MP containing too many redundant genes with low ranks and coefs
+  df_mp_filter <- subset(df_mp, MP %in% mp_keep)
+
+  if (keep.rep.gene) {
+    # this branch for keeping all top genes of kept MPs, including the redundant genes
+    if (only.gene) {
+      ls_MP <- split(df_mp_filter$Gene, df_mp_filter$MP)
+    } else {
+      ls_MP <- split(setNames(df_mp_filter$Coef, df_mp_filter$Gene), df_mp_filter$MP)
     }
-    #keep the cluster result contained program
-    all_pg = intersect(all_pg, names(cluster.result))
-    #keep the cluster order
-    cluster.result = cluster.result[names(cluster.result) %in% all_pg]
-    
-    all_W = lapply(WH.list, function(WH){
-        neo_W = matrix(0, ncol = ncol(WH$W), nrow = length(all_gene))
-        rownames(neo_W) = all_gene
-        colnames(neo_W) = colnames(WH$W)
-        neo_W[match(rownames(WH$W), all_gene),] = WH$W
-        neo_W = neo_W[,intersect(all_pg, colnames(neo_W)), drop = FALSE]
-    }) %>% do.call(what = cbind)
-    #gene contain average coef
-    ls_mp_df = split(names(cluster.result), cluster.result) %>% lapply(function(pgs){
-        # some clusters may only have 1 pg
-        mat_pgs = all_W[,pgs,drop = FALSE]
-        genes = rowMeans(mat_pgs) %>% sort(decreasing = TRUE) %>% head(n = top)
-        df = data.frame(Gene = names(genes), Coef = genes, Rank = 1:top)
-    })
-    #no need to change the MP names, the ClusterPG had give the pgs cluster number
-    names(ls_mp_df) = paste0(key, names(ls_mp_df))
-    ###########################
-    
-    #step 2
-    #remove redundant genes across all MPs
-    #assign the gene by the min rank then max coef 
-    gene_MP_full = sapply(ls_mp_df, '[','Gene') %>% unlist(use.names = FALSE) %>% unique
-    
-    df_mp = lapply(names(ls_mp_df), function(mp){
-        df = ls_mp_df[[mp]]
-        df$MP = mp
-        return(df)
-    }) %>% do.call(what = rbind)
-    
-    #calculate the min rank then bigger coef of each gene
-    df_rank_coef = lapply(gene_MP_full, function(g){
-        df_g = subset(df_mp, Gene == g)
-        RankMin = min(df_g$Rank)
-        CoefBigger = max(subset(df_g, Rank == RankMin)$Coef)
-        data.frame(Gene = g, RankMin = RankMin, CoefBigger = CoefBigger)
-    }) %>% do.call(what = rbind)
-    
-    #calculate the keeping flag for each row
-    df_mp$Idx_keep = sapply(1:nrow(df_mp), function(row){
-        row = df_mp[row,]
-        sub_rank_coef = subset(df_rank_coef, Gene == row$Gene)
-        keep_1 = row$Rank == sub_rank_coef$RankMin
-        keep_2 = row$Coef == sub_rank_coef$CoefBigger
-        return(keep_1 & keep_2)
-    })
-    
-    
-    mp_keep_sum = split(df_mp$Idx_keep, df_mp$MP) %>% sapply(sum)
-    mp_keep = names(mp_keep_sum)[mp_keep_sum >= min.size.MP]
-    #remove MP containing too many redundant genes with low ranks and coefs
-    df_mp_filter = subset(df_mp, MP %in% mp_keep)
-    
-    if(keep.rep.gene){
-        #this branch for keeping all top genes of kept MPs, including the redundant genes 
-        if(only.gene){
-            ls_MP = split(df_mp_filter$Gene, df_mp_filter$MP)
-        }else{
-            ls_MP = split(setNames(df_mp_filter$Coef,df_mp_filter$Gene), df_mp_filter$MP)
-        }
-    }else{
-        #remove redundant genes with low ranks and coefs from MPs
-        df_mp_filter = df_mp_filter[df_mp_filter$Idx_keep,]
-        if(only.gene){
-            ls_MP = split(df_mp_filter$Gene, df_mp_filter$MP)
-        }else{
-            ls_MP = split(setNames(df_mp_filter$Coef,df_mp_filter$Gene), df_mp_filter$MP)
-        }
+  } else {
+    # remove redundant genes with low ranks and coefs from MPs
+    df_mp_filter <- df_mp_filter[df_mp_filter$Idx_keep, ]
+    if (only.gene) {
+      ls_MP <- split(df_mp_filter$Gene, df_mp_filter$MP)
+    } else {
+      ls_MP <- split(setNames(df_mp_filter$Coef, df_mp_filter$Gene), df_mp_filter$MP)
     }
-    
-    #rename the MP based on RP number
-    cluster.result.id = paste0(key,cluster.result)
-    names(cluster.result.id) = names(cluster.result)
-    cluster.result.id = cluster.result.id[cluster.result.id %in% names(ls_MP)]
-    sorted_Old_Neo = sort(c(table(cluster.result.id)),decreasing = TRUE)
-    ls_MP = ls_MP[names(sorted_Old_Neo)]
-    names(ls_MP) = paste0(key,1:length(ls_MP))
-    
-    
-    if(!heatmap){return(ls_MP)}
-    ###########################
-    
-    #step 3
-    #heatmap
-    # change the cluster name
-    v_Old_Neo = setNames(names(ls_MP),nm = names(sorted_Old_Neo))
-    cluster.result.id = setNames(v_Old_Neo[cluster.result.id], nm = names(cluster.result.id))
-    
-    anno = data.frame(cluster.result.id)
-    colnames(anno) = cluster.name
-    
-    
-    if(show.anno){
-        #generate the MP annotation color based on the number
-        if(length(ls_MP) <= 51 ){
-            anno_color = as.character(paletteer_d("ggsci::default_igv"))[1:length(ls_MP)]
-        }else{
-            anno_color = as.character(paletteer_d("ggsci::default_igv", n = length(ls_MP), type = 'continuous'))
-        }
-        
-        anno_color = list(setNames(anno_color, unique(anno[[cluster.name]])))
-        names(anno_color) = cluster.name
-        
-        # for user specific color
-        if(!is.null(color.mp)){
-            if(is.null(names(color.mp))){
-                if(length(color.mp) < length(ls_MP)){
-                    warning('number of color.mp is not enough to mapping MetaProgam number, use defalut color instead\n')
-                    color.mp = anno_color[[cluster.name]]
-                }else{
-                    color.mp = setNames(color.mp[1:length(ls_MP)], names(ls_MP))
-                }
-            }
-            anno_color[[cluster.name]] = color.mp
-        }
-        
-        if(!is.null(annotation)){
-            idx_rp = names(cluster.result) %in% names(cluster.result.id)
-            anno = cbind(anno , annotation[idx_rp,,drop = FALSE])
-            anno_color = c(anno_color, color.annotation)
-        }
-    }else{
-        anno = anno_color = NA
+  }
+
+  # rename the MP based on RP number
+  cluster.result.id <- paste0(key, cluster.result)
+  names(cluster.result.id) <- names(cluster.result)
+  cluster.result.id <- cluster.result.id[cluster.result.id %in% names(ls_MP)]
+  sorted_Old_Neo <- sort(c(table(cluster.result.id)), decreasing = TRUE)
+  ls_MP <- ls_MP[names(sorted_Old_Neo)]
+  names(ls_MP) <- paste0(key, 1:length(ls_MP))
+
+
+  if (!heatmap) {
+    return(ls_MP)
+  }
+  ###########################
+
+  # step 3
+  # heatmap
+  # change the cluster name
+  v_Old_Neo <- setNames(names(ls_MP), nm = names(sorted_Old_Neo))
+  cluster.result.id <- setNames(v_Old_Neo[cluster.result.id], nm = names(cluster.result.id))
+
+  anno <- data.frame(cluster.result.id)
+  colnames(anno) <- cluster.name
+
+
+  if (show.anno) {
+    # generate the MP annotation color based on the number
+    if (length(ls_MP) <= 51) {
+      anno_color <- as.character(paletteer_d("ggsci::default_igv"))[1:length(ls_MP)]
+    } else {
+      anno_color <- as.character(paletteer_d("ggsci::default_igv", n = length(ls_MP), type = "continuous"))
     }
-    
-    cluster.result.id = sort(cluster.result.id)
-    loc_rp = match(names(cluster.result.id), colnames(all_W))
-    ls_rp = apply(all_W[,loc_rp], 2, function(rp){
-        gene_rp = sort(rp, decreasing = TRUE) %>% names %>% head(top)
-        intersect(gene_rp, gene_MP_full)
-    })
-    
-    #the overlap matrix
-    mat_pl = OverlapMat(ls_rp)
-    
-    ls_rp_set = split(names(cluster.result.id), cluster.result.id)
-    # the true order
-    ls_rp_set = ls_rp_set[names(ls_MP)]
-    order_rps = lapply(ls_rp_set, function(rps){
-        sub_mat = mat_pl[rps,rps,drop = FALSE]
-        rps[order(-colSums(sub_mat))]
-    }) %>% unlist(use.names = FALSE)
-    
-    #calculate the gap location
-    if(show.gap){
-        gap = cumsum(lengths(ls_rp_set))
-    }else{
-        gap = NA
+
+    anno_color <- list(setNames(anno_color, unique(anno[[cluster.name]])))
+    names(anno_color) <- cluster.name
+
+    # for user specific color
+    if (!is.null(color.mp)) {
+      if (is.null(names(color.mp))) {
+        if (length(color.mp) < length(ls_MP)) {
+          warning("number of color.mp is not enough to mapping MetaProgam number, use defalut color instead\n")
+          color.mp <- anno_color[[cluster.name]]
+        } else {
+          color.mp <- setNames(color.mp[1:length(ls_MP)], names(ls_MP))
+        }
+      }
+      anno_color[[cluster.name]] <- color.mp
     }
-    mat_pl = mat_pl[order_rps,order_rps]
-    
-    if(show.anno){
-        anno = anno[order_rps,,drop = FALSE]
+
+    if (!is.null(annotation)) {
+      idx_rp <- names(cluster.result) %in% names(cluster.result.id)
+      anno <- cbind(anno, annotation[idx_rp, , drop = FALSE])
+      anno_color <- c(anno_color, color.annotation)
     }
-    
-    hm = ComplexHeatmap::pheatmap(mat_pl, border=border, name = name, 
-                                  annotation_row = anno, annotation_colors = anno_color,
-                                  gaps_row = gap, gaps_col = gap,
-                                  show_colnames = show.colnames, show_rownames = show.rownames,
-                                  cluster_rows = FALSE,
-                                  cluster_cols = FALSE,
-                                  breaks = breaks, color = color, ...)
-    return(list(MetaProgram = ls_MP, HeatMap = hm))
+  } else {
+    anno <- anno_color <- NA
+  }
+
+  cluster.result.id <- sort(cluster.result.id)
+  loc_rp <- match(names(cluster.result.id), colnames(all_W))
+  ls_rp <- apply(all_W[, loc_rp], 2, function(rp) {
+    gene_rp <- sort(rp, decreasing = TRUE) %>%
+      names() %>%
+      head(top)
+    intersect(gene_rp, gene_MP_full)
+  })
+
+  # the overlap matrix
+  mat_pl <- OverlapMat(ls_rp)
+
+  ls_rp_set <- split(names(cluster.result.id), cluster.result.id)
+  # the true order
+  ls_rp_set <- ls_rp_set[names(ls_MP)]
+  order_rps <- lapply(ls_rp_set, function(rps) {
+    sub_mat <- mat_pl[rps, rps, drop = FALSE]
+    rps[order(-colSums(sub_mat))]
+  }) %>% unlist(use.names = FALSE)
+
+  # calculate the gap location
+  if (show.gap) {
+    gap <- cumsum(lengths(ls_rp_set))
+  } else {
+    gap <- NA
+  }
+  mat_pl <- mat_pl[order_rps, order_rps]
+
+  if (show.anno) {
+    anno <- anno[order_rps, , drop = FALSE]
+  }
+
+  hm <- ComplexHeatmap::pheatmap(mat_pl,
+    border = border, name = name,
+    annotation_row = anno, annotation_colors = anno_color,
+    gaps_row = gap, gaps_col = gap,
+    show_colnames = show.colnames, show_rownames = show.rownames,
+    cluster_rows = FALSE,
+    cluster_cols = FALSE,
+    breaks = breaks, color = color, ...
+  )
+  return(list(MetaProgram = ls_MP, HeatMap = hm))
 }

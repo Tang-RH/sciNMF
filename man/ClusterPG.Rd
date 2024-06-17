@@ -20,10 +20,10 @@ ClusterPG(
 
 \item{min.cluster.size}{Minimum size of a cluster to be retained default is 0.}
 
-\item{method.clustering}{Method for hierarchical clustering. 
+\item{method.clustering}{Method for hierarchical clustering.
 Options include "ward.D2" (default), "single", "complete" and other methods supported by \code{\link[stats]{hclust}}}
 
-\item{distance.clustering}{Method for calculating distances between clusters. 
+\item{distance.clustering}{Method for calculating distances between clusters.
 Options include "Intersection" (default), "Jaccard", "correlation", and any other valid method for \code{\link[stats]{dist}}.}
 
 \item{max.intersect}{Maximum intersection value (used when distance.clustering = "Intersection"). Default is 50.}
@@ -32,19 +32,19 @@ Options include "Intersection" (default), "Jaccard", "correlation", and any othe
 A vector indicating the cluster assignment for each program.
 }
 \description{
-This function clusters robust programs using the provided overlap matrix 
+This function clusters robust programs using the provided overlap matrix
 and filters the clusters based on their size (number of robust programs).
 }
 \examples{
 # Example lists
 set.seed(123)
-ls_pg <- lapply(setNames(nm = paste0('PG',1:50)), function(i){
-    paste0('g',sample(1:100,20))
+ls_pg <- lapply(setNames(nm = paste0("PG", 1:50)), function(i) {
+  paste0("g", sample(1:100, 20))
 })
 
 # Calculate the overlap matrix
 ovlp <- OverlapMat(ls_pg)
-clusters <- ClusterPG(ovlp, cut.num = 5, min.cluster.size = 4, max.intersect = 20 )
+clusters <- ClusterPG(ovlp, cut.num = 5, min.cluster.size = 4, max.intersect = 20)
 print(clusters)
 
 }

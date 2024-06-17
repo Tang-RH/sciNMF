@@ -21,7 +21,7 @@ calculate evaluation metrics for each specified number of clusters. Default is 2
 
 \item{ncol}{The number of columns for arranging subplots in the plot area. Default is 3.}
 
-\item{distance.clustering}{The distance measure used for clustering. Possible values are \code{"Intersection"} for intersection between two programs as similarity, 
+\item{distance.clustering}{The distance measure used for clustering. Possible values are \code{"Intersection"} for intersection between two programs as similarity,
 \code{"Jaccard"} for Jaccard similarity, \code{"correlation"} for Pearson correlation and all the distances supported by \code{\link[stats]{dist}}, such as \code{"euclidean"}, etc.
 Default is \code{"Intersection"}. If this parameter is set as \code{"Jaccard"}, the \code{Jaccard} parameter in \code{\link{OverlapMat}} should be set as \code{TRUE}.}
 
@@ -42,8 +42,8 @@ It calculates and visualizes key clustering evaluation metrics to aid in the ass
 
 # Sample transcriptional programs
 set.seed(123)
-ls_pg <- lapply(1:50, function(i){
-  paste0('g',sample(1:1000,50))
+ls_pg <- lapply(1:50, function(i) {
+  paste0("g", sample(1:1000, 50))
 })
 
 # Generate the ovelap matrix
@@ -53,7 +53,6 @@ cluster_plot <- ClusterMetricsPlot(ovlp, num.clusters = 2:10, ncol = 2)
 
 # Display the cluster plot
 print(cluster_plot)
-
 
 }
 \seealso{

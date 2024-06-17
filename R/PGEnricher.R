@@ -43,34 +43,38 @@
 #'
 #' @export
 #'
-PGEnricher = function(pg.list, gene.set = "GO_BP", universe = NULL,
-                    only.df = TRUE,
-                    minGSSize = 10, maxGSSize = 500,
-                    padj.cutoff =0.05, padj.method = 'BH',...){
-    # data("ls_gs_sciNMF", package = "sciNMF")
+PGEnricher <- function(pg.list, gene.set = "GO_BP", universe = NULL,
+                       only.df = TRUE,
+                       minGSSize = 10, maxGSSize = 500,
+                       padj.cutoff = 0.05, padj.method = "BH", ...) {
+  # data("ls_gs_sciNMF", package = "sciNMF")
 
-    if(is.character(gene.set)){
-        if(!all(gene.set %in% names(ls_gs_sciNMF))){
-            warning(paste(setdiff(gene.set, names(ls_gs_sciNMF)), collapse = ', '), '  not supported')
-            gene.set = intersect(gene.set, names(ls_gs_sciNMF))
-            if(length(gene.set)<1){stop('Please set correct gene.set')}
-        }
-        TERM2GENE = do.call(what = rbind, c(ls_gs_sciNMF[gene.set],make.row.names = FALSE))
-    }else{
-        TERM2GENE = gene.set
+  if (is.character(gene.set)) {
+    if (!all(gene.set %in% names(ls_gs_sciNMF))) {
+      warning(paste(setdiff(gene.set, names(ls_gs_sciNMF)), collapse = ", "), "  not supported")
+      gene.set <- intersect(gene.set, names(ls_gs_sciNMF))
+      if (length(gene.set) < 1) {
+        stop("Please set correct gene.set")
+      }
     }
+    TERM2GENE <- do.call(what = rbind, c(ls_gs_sciNMF[gene.set], make.row.names = FALSE))
+  } else {
+    TERM2GENE <- gene.set
+  }
 
-    ls_res_enrich = lapply(pg.list,function(pg){
-        res = clusterProfiler::enricher(pg, TERM2GENE = TERM2GENE,
-                                        minGSSize = minGSSize,
-                                        maxGSSize = maxGSSize,
-                                        pAdjustMethod = padj.method,
-                                        universe = universe,
-                                        pvalueCutoff = padj.cutoff,...)
-        if(only.df){
-            res = res@result
-        }
-        return(res)
-    })
-    return(ls_res_enrich)
+  ls_res_enrich <- lapply(pg.list, function(pg) {
+    res <- clusterProfiler::enricher(pg,
+      TERM2GENE = TERM2GENE,
+      minGSSize = minGSSize,
+      maxGSSize = maxGSSize,
+      pAdjustMethod = padj.method,
+      universe = universe,
+      pvalueCutoff = padj.cutoff, ...
+    )
+    if (only.df) {
+      res <- res@result
+    }
+    return(res)
+  })
+  return(ls_res_enrich)
 }

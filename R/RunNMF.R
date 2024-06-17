@@ -48,119 +48,129 @@
 #' @references
 #' NNLM: \url{https://github.com/linxihui/NNLM/}
 
-RunNMF = function(object, group.by, dir.output = NULL, k.range = 3:8, samples = NULL, project = "NMF",
-                  normalization.method = "SCT", min.cell = 10, variable.features.n = 7000,
-                  do.scale = FALSE, do.center = TRUE,
-                  ncore = 1, seed = 123,
-                  rm.MT = TRUE, rm.RP.S.L = TRUE, rm.HSP = TRUE,
-                  loss = "mse", max.iter = 5000, method  = "scd", ...){
-    
-    # check the version of SeuratObject
-    flag_v = packageVersion('SeuratObject') >= '5'
+RunNMF <- function(object, group.by, dir.output = NULL, k.range = 3:8, samples = NULL, project = "NMF",
+                   normalization.method = "SCT", min.cell = 10, variable.features.n = 7000,
+                   do.scale = FALSE, do.center = TRUE,
+                   ncore = 1, seed = 123,
+                   rm.MT = TRUE, rm.RP.S.L = TRUE, rm.HSP = TRUE,
+                   loss = "mse", max.iter = 5000, method = "scd", ...) {
+  # check the version of SeuratObject
+  flag_v <- packageVersion("SeuratObject") >= "5"
 
-    if(any(is.na(object@meta.data[, group.by]))){
-        warning("The ", group.by, " column contains NA and those cells are removed!")
-        idx_cell = !is.na(object@meta.data[, group.by])
-        object = object[,idx_cell]
-    }
-    
-    if(is.null(samples)){
-        samples = unique(object@meta.data[,group.by])
-    }
-    
-    if(flag_v){
-        genes = rownames(Seurat::GetAssayData(object, assay = 'RNA', layer = 'counts'))
-    }else{
-        genes = rownames(Seurat::GetAssayData(object, assay = 'RNA', slot = 'counts'))
-    }
-    
-    #remove MT, RP, HSP genes
-    if(rm.MT){genes = grep("^MT-",genes, invert = TRUE, value = TRUE)}
-    if(rm.RP.S.L){genes = grep("^RP[SL]", genes, invert = TRUE, value = TRUE)}
-    if(rm.HSP){genes = grep("^HSP", genes, invert = TRUE, value = TRUE)}
+  if (any(is.na(object@meta.data[, group.by]))) {
+    warning("The ", group.by, " column contains NA and those cells are removed!")
+    idx_cell <- !is.na(object@meta.data[, group.by])
+    object <- object[, idx_cell]
+  }
+
+  if (is.null(samples)) {
+    samples <- unique(object@meta.data[, group.by])
+  }
+
+  if (flag_v) {
+    genes <- rownames(Seurat::GetAssayData(object, assay = "RNA", layer = "counts"))
+  } else {
+    genes <- rownames(Seurat::GetAssayData(object, assay = "RNA", slot = "counts"))
+  }
+
+  # remove MT, RP, HSP genes
+  if (rm.MT) {
+    genes <- grep("^MT-", genes, invert = TRUE, value = TRUE)
+  }
+  if (rm.RP.S.L) {
+    genes <- grep("^RP[SL]", genes, invert = TRUE, value = TRUE)
+  }
+  if (rm.HSP) {
+    genes <- grep("^HSP", genes, invert = TRUE, value = TRUE)
+  }
 
 
-    if(flag_v){
-        clean_counts = Seurat::GetAssayData(object, assay = 'RNA', layer = 'counts')[genes,]
-    }else{
-        clean_counts = Seurat::GetAssayData(object, assay = 'RNA', slot = 'counts')[genes,]
-    }
-    
-    
-    doParallel::registerDoParallel(cores = ncore)
+  if (flag_v) {
+    clean_counts <- Seurat::GetAssayData(object, assay = "RNA", layer = "counts")[genes, ]
+  } else {
+    clean_counts <- Seurat::GetAssayData(object, assay = "RNA", slot = "counts")[genes, ]
+  }
 
-    ls_res = foreach(sam = samples ) %dopar% {
 
-    message("Start sample ", sam, " -- Current time:",as.character(Sys.time()))
-    idx_cell = object@meta.data[,group.by] == sam
+  doParallel::registerDoParallel(cores = ncore)
 
-    if(sum(idx_cell) < min.cell){
-        message('Sample ',sam,' has only ',sum(idx_cell),' cells less than ',min.cell,' cells, skip it\n')
-        return(NULL)
-    }
+  ls_res <- foreach(sam = samples) %dopar% {
+    message("Start sample ", sam, " -- Current time:", as.character(Sys.time()))
+    idx_cell <- object@meta.data[, group.by] == sam
 
-    idx_0_gene = Matrix::rowSums(clean_counts[,idx_cell]) == 0
-
-    srt = Seurat::CreateSeuratObject(counts = clean_counts[!idx_0_gene, idx_cell], meta.data = object@meta.data[idx_cell,])
-
-    if(normalization.method == 'SCT'){
-        #I don't know why warning for Seurat::SCTransform()
-        srt = SCTransform(srt,verbose = FALSE, do.scale = do.scale,
-                                  do.center = do.center, variable.features.n = variable.features.n)
-        if(flag_v){
-            data = Seurat::GetAssayData(srt, assay = 'SCT', layer = 'scale.data')
-        }else{
-            data = Seurat::GetAssayData(srt, assay = 'SCT', slot = 'scale.data')
-        }
-        
-
-    }else if(normalization.method == "LogNormalize"){
-        srt = Seurat::NormalizeData(srt, normalization.method = "LogNormalize", scale.factor = 10000)
-        srt = Seurat::FindVariableFeatures(srt, selection.method = "vst", nfeatures = variable.features.n)
-        srt = Seurat::ScaleData(srt, features = VariableFeatures(srt),
-                              do.scale = do.scale, do.center = do.center)
-        
-        if(flag_v){
-            data = Seurat::GetAssayData(srt, assay = 'SCT', layer = 'scale.data')
-        }else{
-            data = Seurat::GetAssayData(srt, assay = 'SCT', slot = 'scale.data')
-        }
-        
-
-    }else{
-        stop('Invalid normalization.method, must be one of SCT, LogNormalize')
+    if (sum(idx_cell) < min.cell) {
+      message("Sample ", sam, " has only ", sum(idx_cell), " cells less than ", min.cell, " cells, skip it\n")
+      return(NULL)
     }
 
+    idx_0_gene <- Matrix::rowSums(clean_counts[, idx_cell]) == 0
 
-    data = data[Seurat::VariableFeatures(srt),]
-    data[data < 0] = 0
-    data = data[apply(data, 1, var) > 0, ]
+    srt <- Seurat::CreateSeuratObject(counts = clean_counts[!idx_0_gene, idx_cell], meta.data = object@meta.data[idx_cell, ])
 
-    ls_WH = lapply(k.range, function(k){
-        set.seed(seed)
-        res_nmf = NNLM::nnmf(data, k = k, loss = loss, max.iter = max.iter, method  = method, ...)
-        H = res_nmf$H
-        W = res_nmf$W
-        rownames(H) = colnames(W) = paste0(project,'_',sam,'_K',k,'_P',1:k)
-        return(list(H = H, W = W))
+    if (normalization.method == "SCT") {
+      # I don't know why warning for Seurat::SCTransform()
+      srt <- SCTransform(srt,
+        verbose = FALSE, do.scale = do.scale,
+        do.center = do.center, variable.features.n = variable.features.n
+      )
+      if (flag_v) {
+        data <- Seurat::GetAssayData(srt, assay = "SCT", layer = "scale.data")
+      } else {
+        data <- Seurat::GetAssayData(srt, assay = "SCT", slot = "scale.data")
+      }
+    } else if (normalization.method == "LogNormalize") {
+      srt <- Seurat::NormalizeData(srt, normalization.method = "LogNormalize", scale.factor = 10000)
+      srt <- Seurat::FindVariableFeatures(srt, selection.method = "vst", nfeatures = variable.features.n)
+      srt <- Seurat::ScaleData(srt,
+        features = VariableFeatures(srt),
+        do.scale = do.scale, do.center = do.center
+      )
+
+      if (flag_v) {
+        data <- Seurat::GetAssayData(srt, assay = "SCT", layer = "scale.data")
+      } else {
+        data <- Seurat::GetAssayData(srt, assay = "SCT", slot = "scale.data")
+      }
+    } else {
+      stop("Invalid normalization.method, must be one of SCT, LogNormalize")
+    }
+
+
+    data <- data[Seurat::VariableFeatures(srt), ]
+    data[data < 0] <- 0
+    data <- data[apply(data, 1, var) > 0, ]
+
+    ls_WH <- lapply(k.range, function(k) {
+      set.seed(seed)
+      res_nmf <- NNLM::nnmf(data, k = k, loss = loss, max.iter = max.iter, method = method, ...)
+      H <- res_nmf$H
+      W <- res_nmf$W
+      rownames(H) <- colnames(W) <- paste0(project, "_", sam, "_K", k, "_P", 1:k)
+      return(list(H = H, W = W))
     })
 
-    all_W = lapply(ls_WH, function(WH){WH$W}) %>% do.call(what = cbind)
-    all_H = lapply(ls_WH, function(WH){WH$H}) %>% do.call(what = rbind)
-    WHs = list(W = all_W, H = all_H)
+    all_W <- lapply(ls_WH, function(WH) {
+      WH$W
+    }) %>% do.call(what = cbind)
+    all_H <- lapply(ls_WH, function(WH) {
+      WH$H
+    }) %>% do.call(what = rbind)
+    WHs <- list(W = all_W, H = all_H)
 
-    if(!is.null(dir.output)){
-        if(!file.exists(dir.output)){
-            dir.create(dir.output, recursive = TRUE)
-        }
-        saveRDS(WHs, paste0(dir.output, '/',project, '_',sam, '_hvg',variable.features.n,
-                          '_k',k.range[1], 'to',tail(k.range,1), '.rds'))
+    if (!is.null(dir.output)) {
+      if (!file.exists(dir.output)) {
+        dir.create(dir.output, recursive = TRUE)
+      }
+      saveRDS(WHs, paste0(
+        dir.output, "/", project, "_", sam, "_hvg", variable.features.n,
+        "_k", k.range[1], "to", tail(k.range, 1), ".rds"
+      ))
     }
-    message('Sample ', sam, ' done!')
+    message("Sample ", sam, " done!")
     return(WHs)
-    }
-    names(ls_res) = samples
-    ls_res = ls_res[!sapply(ls_res, is.null)]
-    message('All Done!')
-    return(ls_res)
+  }
+  names(ls_res) <- samples
+  ls_res <- ls_res[!sapply(ls_res, is.null)]
+  message("All Done!")
+  return(ls_res)
 }

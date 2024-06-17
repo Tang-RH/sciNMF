@@ -55,7 +55,7 @@ MetaProgram(
 \item{annotation}{Additional annotation to be added to the heatmap. It should be a data.frame, each row represents a robust program contained in cluster.result,
 each column represents an annotation item.}
 
-\item{color.annotation}{A list object contain the annotation color, the name of each element should match the colnames of annotion data.frame 
+\item{color.annotation}{A list object contain the annotation color, the name of each element should match the colnames of annotion data.frame
 and each element is a named color vector.}
 
 \item{cluster.name}{Name for the clustering annotation (for heatmap metaprogram annotation name, defalut is MetaProgram).}
@@ -81,15 +81,15 @@ A list containing MetaProgram information and, if specified, a heatmap.
 This function generates meta programs and the heatmap of cluster result (optional).
 }
 \details{
-The function including 3 steps:  
+The function including 3 steps:
 
-Step1: Generate the meta program (MP) from cluster result. For each MP, the coefficient of genes are calculated 
-from average weight (W matrix of NMF result) of all the programs assigned to this MP, and the top genes will 
-be selected as the MP signature. 
- 
-Step2: Remove redundant genes across all MPs, assign the overlap genes by the min rank then max coef across MPs. 
-Then MPs contain no enough genes (\code{min.size.MP}) are removed. 
- 
+Step1: Generate the meta program (MP) from cluster result. For each MP, the coefficient of genes are calculated
+from average weight (W matrix of NMF result) of all the programs assigned to this MP, and the top genes will
+be selected as the MP signature.
+
+Step2: Remove redundant genes across all MPs, assign the overlap genes by the min rank then max coef across MPs.
+Then MPs contain no enough genes (\code{min.size.MP}) are removed.
+
 Step3(optional): Draw the cluster heatmap of remaining MPs.
 }
 \seealso{
