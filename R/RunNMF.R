@@ -127,9 +127,9 @@ RunNMF <- function(object, group.by, dir.output = NULL, k.range = 3:8, samples =
       )
 
       if (flag_v) {
-        data <- Seurat::GetAssayData(srt, assay = "SCT", layer = "scale.data")
+        data <- Seurat::GetAssayData(srt, assay = "RNA", layer = "scale.data")
       } else {
-        data <- Seurat::GetAssayData(srt, assay = "SCT", slot = "scale.data")
+        data <- Seurat::GetAssayData(srt, assay = "RNA", slot = "scale.data")
       }
     } else {
       stop("Invalid normalization.method, must be one of SCT, LogNormalize")

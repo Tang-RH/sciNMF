@@ -1,11 +1,11 @@
 Package: sciNMF
 Type: Package
-Title: Single Cell Individial Non-negative Matrix Factorization
+Title: Single-Cell Integration by Non-Negative Matrix Factorization
 Version: 0.1.2
 Authors@R: c(person("Ronghan", "Tang", email = "908488796@qq.com", role = c("aut", "cre")),
     person("Zheyang", "Zhang", role = "aut", email = "82795809@qq.com"))
 Maintainer: Ronghan Tang <908488796@qq.com>
-Description: sciNMF (Single-Cell Individual Non-Negative Matrix Factorization) is an R package designed for exploring the heterogeneity of cellular transcriptional states across individuals using single-cell RNA-seq data.
+Description: sciNMF (Single-Cell Integration by Non-Negative Matrix Factorization) is an R package designed for exploring the heterogeneity of cellular transcriptional states across individuals using single-cell RNA-seq data.
 License: MIT + file LICENSE
 Imports: Seurat (>= 3.0.0),
 	foreach, 
