@@ -63,7 +63,7 @@ IQRPlot <- function(WH.list, IQR.cut = 0.1, median.cut = 0.02, grid = TRUE, ncol
       }
 
 
-    df_pl <- tidyr::gather(data.frame(t(H)), "Program", "Ratio")
+    df_pl <- tidyr::gather(data.frame(t(H), check.names = FALSE), "Program", "Ratio")
     mat_quat <- apply(H, 1, quantile)
     idx_median <- mat_quat["50%", ] > median.cut
     idx_IQR <- mat_quat["75%", ] - mat_quat["25%", ] > IQR.cut

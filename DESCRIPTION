@@ -1,7 +1,7 @@
 Package: sciNMF
 Type: Package
 Title: Single-Cell Integration by Non-Negative Matrix Factorization
-Version: 0.1.2
+Version: 0.1.3
 Authors@R: c(person("Ronghan", "Tang", email = "908488796@qq.com", role = c("aut", "cre")),
     person("Zheyang", "Zhang", role = "aut", email = "82795809@qq.com"))
 Maintainer: Ronghan Tang <908488796@qq.com>
