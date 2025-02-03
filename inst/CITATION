@@ -1,0 +1,21 @@
+citHeader("To cite sciNMF in publications, please use:")
+
+bibentry(bibtype = "article",
+  author = c(
+  as.person("Zheyang Zhang"),
+  as.person("Ronghan Tang"),
+  as.person("Ming Zhu"),
+  as.person("Zhijuan Zhu"),
+  as.person("Jiali Zhu"),
+  as.person("Hua Li"),
+  as.person("Mengsha Tong"),
+  as.person("Nainong Li"),
+  as.person("Jialiang Huang")
+  ),
+  title = "Deciphering cell states and the cellular ecosystem to improve risk stratification in acute myeloid leukemia",
+  journal = "Briefings in Bioinformatics",
+  year = "2025",
+  doi = "10.1093/bib/bbaf028",
+  url = "https://doi.org/10.1093/bib/bbaf028",
+  textVersion = "Zhang Z, Tang R, Zhu M, et al. Deciphering cell states and the cellular ecosystem to improve risk stratification in acute myeloid leukemia. Briefings in Bioinformatics. (2025)"
+)

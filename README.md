@@ -71,4 +71,4 @@ Please feel free to open an issue if you encounter any problems while using our 
 
 ## **Citation**
 
-If you find sciNMF useful for your research, please consider citing our publication.
+If you find sciNMF useful for your research, please consider citing our publication: Zhang Z, Tang R, Zhu M, et al. [Deciphering cell states and the cellular ecosystem to improve risk stratification in acute myeloid leukemia](https://doi.org/10.1093/bib/bbaf028). Brief Bioinform. 2024
